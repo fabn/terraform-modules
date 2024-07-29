@@ -1,0 +1,33 @@
+name: Test a terraform module
+description: Run terraform install and test
+inputs:
+  working_directory:
+    description: 'Working directory where the terraform module is located'
+    required: false
+  terraform_version:
+    description: Terraform version to use
+    required: false
+  sops:
+    description: 'Whether to configure sops'
+    default: true
+
+runs:
+  using: "composite"
+  steps:
+    # As authentication will use the SOPS_AGE_KEY env variable given as secret
+    - name: Install SOPS
+      uses: fabn/mozilla-sops-action@node20
+      if: ${{ inputs.sops }}
+
+    - name: Install terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: ${{ inputs.terraform_version }}
+
+    - name: Terraform Init
+      shell: bash
+      run: terraform -chdir=${{ inputs.working_directory }} init
+
+    - name: Terraform Test
+      run: terraform -chdir=${{ inputs.working_directory }} test
+      shell: bash

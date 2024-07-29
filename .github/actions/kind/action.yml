@@ -1,0 +1,18 @@
+name: Install Kind and configure a Kubernetes cluster
+description: Create a cluster and a kubeconfig file in workspace
+inputs:
+  cluster_name:
+    description: 'Name of the Kubernetes cluster'
+    default: 'kind'
+  config:
+    description: 'Path to the kind configuration file'
+    default: '.github/kind-config.yml'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Kubernetes
+      uses: helm/kind-action@v1.9.0
+      with:
+        cluster_name: ${{ inputs.cluster_name }}
+        config: ${{ inputs.config }}

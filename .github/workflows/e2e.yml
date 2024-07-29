@@ -1,0 +1,74 @@
+name: E2E test suite
+
+on:
+  pull_request:
+
+jobs:
+
+  changed-modules:
+    name: Get all changed modules
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.changed-modules.outputs.all_changed_files }}
+      # Returns the list of all changed terraform modules that have been changed
+      changed_modules: ${{ steps.changed-modules.outputs.all_changed_files }}
+      any_changed: ${{ steps.changed-modules.outputs.any_changed }}
+    steps:
+      - name: Get all changed terraform files
+        id: changed-modules
+        uses: tj-actions/changed-files@v44
+        # Used as input for matrix
+        with:
+          matrix: true
+          dir_names: true
+          files: "**/*.{tf,hcl,env}"
+
+  e2e:
+    needs: [changed-modules]
+    # Skip when no modules have changed
+    if: ${{ needs.changed-modules.outputs.matrix != '[]' && needs.changed-modules.outputs.matrix != '' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        module: ${{ fromJSON(needs.changed-modules.outputs.matrix) }}
+    name: ${{ matrix.module }}
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ matrix.module }}
+      cancel-in-progress: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check Needed Clusters
+        id: needs
+        run: |
+          grep -qr kind-kind ${{ matrix.module }} && echo "kind=true" >> "$GITHUB_OUTPUT"; true  
+          grep -qr live-cluster ${{ matrix.module }} && echo "do=true" >> "$GITHUB_OUTPUT"; true  
+
+      - name: Setup DigitalOcean
+        if: steps.needs.outputs.do == 'true'
+        uses: ./.github/actions/doctl
+        with:
+          cluster: main-cluster
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Setup Kubernetes
+        if: steps.needs.outputs.kind == 'true'
+        uses: ./.github/actions/kind
+
+      # Optional module setup script to run before terraform
+      - name: Test setup
+        working-directory: ${{ matrix.module }}
+        run: test -f setup.sh && ./setup.sh
+
+      - name: Terraform Test
+        uses: ./.github/actions/terraform-test
+        env:
+          # When running in debug mode be more verbose
+          TF_LOG: ${{ runner.debug == '1' && 'DEBUG' || 'ERROR' }}
+          SOPS_AGE_KEY: ${{ secrets.SOPS_KIND_GITHUB_ACTION }}
+          TF_VAR_do_token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+        with:
+          working_directory: ${{ matrix.module }}
+          sops: true
