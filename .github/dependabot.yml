@@ -11,3 +11,14 @@ updates:
     schedule:
       # Check for updates to GitHub Actions every day
       interval: "daily"
+  # Configure dependabot to check for updates to Terraform modules
+  - package-ecosystem: "terraform"
+    directories:
+      - "**/*" # Check all directories for Terraform modules
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+      time: "10:00"
+      timezone: "Europe/Rome"
+    assignees:
+      - "fabn"
