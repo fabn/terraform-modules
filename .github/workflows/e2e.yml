@@ -60,7 +60,7 @@ jobs:
       # Optional module setup script to run before terraform
       - name: Test setup
         working-directory: ${{ matrix.module }}
-        run: test -f setup.sh && ./setup.sh
+        run: test -f setup.sh && ./setup.sh || echo "No setup script found"
 
       - name: Terraform Test
         uses: ./.github/actions/terraform-test
