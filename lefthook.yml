@@ -1,0 +1,52 @@
+# EXAMPLE USAGE:
+#
+#   Refer for explanation to following link:
+#   https://github.com/evilmartians/lefthook/blob/master/docs/configuration.md
+
+# Which added stage_fixed option
+min_version: 1.7.0
+
+# Can be tweaked to avoid printing output as your preference into .lefthook.local.yml
+# skip_output:
+  # - execution      # Skips printing any execution logs (but prints if the execution failed)
+  # - execution_out  # Skips printing execution output (but still prints failed commands output)  -
+  # - execution_info # Skips printing `EXECUTE > ...` logging
+
+pre-push: &pre-push
+  parallel: true
+  commands:
+    actionlint:
+      glob: ".github/workflows/**.*"
+      run: actionlint
+    terraform-format:
+      glob: "*.{tf,hcl}"
+      exclude: ".lock.hcl"
+      run: terraform fmt -check -recursive {push_files}
+    terraform-validate:
+      glob: "*.tf"
+      run: terraform validate -no-color
+
+pre-commit:
+  commands:
+    actionlint:
+      glob: ".github/workflows/**.*"
+      run: actionlint
+    terraform-format:
+      glob: "*.{tf,hcl}"
+      exclude: ".lock.hcl"
+      stage_fixed: true
+      run: terraform fmt {staged_files}
+
+
+# When branch is changed (and there's at least a hcl in the diff) perform a terraform init for each module
+post-checkout:
+  parallel: true
+  commands:
+    terraform-init:
+      files: git diff --name-only {1} {2}
+      glob: '*.lock.hcl'
+      run: terraform init
+
+# Allow validate all to be run as custom command with
+# lefthook run validate-all
+validate-all: *pre-push

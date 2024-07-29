@@ -1,0 +1,24 @@
+# To get started with Dependabot version updates, you'll need to specify which
+# package ecosystems to update and where the package manifests are located.
+# Please see the documentation for all configuration options:
+# https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+  # For now just propose updates to GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      # Check for updates to GitHub Actions every day
+      interval: "daily"
+  # Configure dependabot to check for updates to Terraform modules
+  - package-ecosystem: "terraform"
+    directories:
+      - "**/*" # Check all directories for Terraform modules
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+      time: "10:00"
+      timezone: "Europe/Rome"
+    assignees:
+      - "fabn"
