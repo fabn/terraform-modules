@@ -18,9 +18,17 @@ resource "spacelift_context" "context" {
 }
 
 resource "spacelift_environment_variable" "env" {
-  for_each   = var.environment_variables
+  for_each   = toset(keys(var.environment_variables))
   context_id = spacelift_context.context.id
   name       = each.key
-  value      = each.value
+  value      = var.environment_variables[each.key]
+  write_only = true
+}
+
+resource "spacelift_environment_variable" "vars" {
+  for_each   = toset(keys(var.terraform_variables))
+  context_id = spacelift_context.context.id
+  name       = "TF_VAR_${each.key}"
+  value      = var.terraform_variables[each.key]
   write_only = true
 }

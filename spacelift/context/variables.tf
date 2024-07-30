@@ -22,6 +22,15 @@ variable "attach_to" {
 }
 
 variable "environment_variables" {
-  type    = map(string)
-  default = {}
+  description = "List of environment variables to expose to the context"
+  type        = map(string)
+  default     = {}
+  sensitive   = true
+}
+
+variable "terraform_variables" {
+  description = "List of Terraform variables to expose to the context (no need to prefix them)"
+  type        = map(string)
+  default     = {}
+  sensitive   = true
 }
