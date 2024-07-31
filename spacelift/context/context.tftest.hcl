@@ -2,6 +2,13 @@
 mock_provider "spacelift" {}
 
 run "create_context" {
+  override_data {
+    target = data.spacelift_space.root
+    values = {
+      id = "root"
+    }
+  }
+
   variables {
     name = "Test"
     environment_variables = {
@@ -16,6 +23,11 @@ run "create_context" {
   assert {
     condition     = spacelift_context.context.name == "Test"
     error_message = "The context was not created"
+  }
+
+  assert {
+    condition     = spacelift_context.context.space_id == "root"
+    error_message = "Wrong space ID"
   }
 
   assert {
