@@ -36,3 +36,14 @@ run "create_team" {
     error_message = "Proper permissions was not created"
   }
 }
+
+run "create_team_with_no_members" {
+  variables {
+    name = "Empty Team"
+  }
+
+  assert {
+    condition     = length(github_team_members.users) == 0
+    error_message = "The team was not empty"
+  }
+}
