@@ -16,6 +16,9 @@ run "create_context" {
       FOO = "bar"
     }
     labels = ["foo", "bar"]
+    terraform_variables = {
+      bar = "baz"
+    }
   }
 
   assert {
@@ -30,6 +33,11 @@ run "create_context" {
 
   assert {
     condition     = spacelift_environment_variable.secrets["FOO"].value == "bar"
+    error_message = "Environment variable was not set"
+  }
+
+  assert {
+    condition     = spacelift_environment_variable.vars["bar"].value == "baz"
     error_message = "Environment variable was not set"
   }
 

@@ -35,3 +35,11 @@ resource "spacelift_environment_variable" "secrets" {
   value      = each.value
   write_only = true
 }
+
+resource "spacelift_environment_variable" "vars" {
+  for_each   = toset(keys(nonsensitive(var.terraform_variables)))
+  stack_id   = spacelift_stack.stack.id
+  name       = "TF_VAR_${each.key}"
+  value      = var.terraform_variables[each.key]
+  write_only = true
+}

@@ -56,3 +56,9 @@ variable "secrets" {
   default   = {}
   sensitive = true
 }
+
+variable "terraform_variables" {
+  type      = map(string)
+  default   = {}
+  sensitive = true
+}
