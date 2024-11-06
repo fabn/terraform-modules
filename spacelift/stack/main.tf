@@ -41,5 +41,5 @@ resource "spacelift_environment_variable" "vars" {
   stack_id   = spacelift_stack.stack.id
   name       = "TF_VAR_${each.key}"
   value      = var.terraform_variables[each.key]
-  write_only = true
+  write_only = false
 }
