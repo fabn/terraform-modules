@@ -24,7 +24,8 @@ jobs:
           files: "**/*.{tf,hcl,env}"
 
   e2e:
-    needs: [changed-modules]
+    needs: changed-modules
+    timeout-minutes: 10
     # Skip when no modules have changed
     if: ${{ needs.changed-modules.outputs.matrix != '[]' && needs.changed-modules.outputs.matrix != '' }}
     strategy:
