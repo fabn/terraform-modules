@@ -1,0 +1,30 @@
+controller:
+  config:
+    # Custom error pages
+    custom-http-errors: "404,503"
+# Custom error pages
+defaultBackend:
+  enabled: true
+  resources:
+    requests:
+      cpu: 50m
+      memory: 100Mi
+    limits:
+      memory: 100Mi
+  image:
+    registry: registry.k8s.io
+    image: ingress-nginx/nginx-errors
+    # See https://explore.ggcr.dev/?repo=registry.k8s.io%2Fingress-nginx%2Fnginx-errors
+    tag: "v20231208-4c39e6acc"
+  extraVolumes:
+  - name: custom-error-pages
+    configMap:
+      name: ingress-custom-error-pages
+      items:
+      - key: "404.html"
+        path: "404.html"
+      - key: "503.html"
+        path: "503.html"
+  extraVolumeMounts:
+  - name: custom-error-pages
+    mountPath: /www

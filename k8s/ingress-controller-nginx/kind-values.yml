@@ -1,0 +1,12 @@
+controller:
+  # Needed to make ingress work with kind setup
+  # see https://github.com/jhandguy/horizontal-pod-autoscaler/blob/main/kind/ingress-nginx-values.yaml
+  hostPort:
+    enabled: true
+  publishService:
+    enabled: false
+  extraArgs:
+    publish-status-address: "localhost"
+  # Service annotation to better integration with DigitalOcean Load Balancer
+  service:
+    type: ClusterIP

@@ -1,0 +1,19 @@
+controller:
+  # Enable ingress class resource as default one
+  ingressClassResource:
+    default: ${default}
+    name: ${ingress_class_name}
+  # Configmap for nginx
+  config:
+    # Digital ocean specific annotation to see the real client IP
+    use-proxy-protocol: "true"
+  # Ingress annotations to better integrate with DigitalOcean Load Balancer
+  service:
+    annotations:
+      service.beta.kubernetes.io/do-loadbalancer-enable-proxy-protocol: "true"
+      service.beta.kubernetes.io/do-loadbalancer-hostname: ${load_balancer_hostname}
+      service.beta.kubernetes.io/do-loadbalancer-http-ports: "80"
+      service.beta.kubernetes.io/do-loadbalancer-name: ${load_balancer_hostname}
+      service.beta.kubernetes.io/do-loadbalancer-protocol: http
+      service.beta.kubernetes.io/do-loadbalancer-tls-passthrough: "true"
+      service.beta.kubernetes.io/do-loadbalancer-tls-ports: "443"
