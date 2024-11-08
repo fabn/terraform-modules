@@ -6,7 +6,7 @@ provider "kubernetes" {
 run "http_ingress" {
   variables {
     name             = "echo-server"
-    ingress_hostname = "echo-server.lvh.me.dev"
+    ingress_hostname = "echo-server.lvh.me"
     namespace        = "echo-server"
     image            = "ealen/echo-server:latest"
   }
