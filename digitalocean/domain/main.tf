@@ -6,15 +6,6 @@ terraform {
   }
 }
 
-# Passed for tests, not used in the module directly
-variable "do_token" {
-  description = "DigitalOcean API token"
-  type        = string
-  default     = null
-  sensitive   = true
-  nullable    = true
-}
-
 # Create the domain object
 resource "digitalocean_domain" "domain" {
   name = var.name
