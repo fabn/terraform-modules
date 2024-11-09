@@ -3,8 +3,8 @@ run "create_cluster" {
 	  source = "../k8s_cluster"
 	}
   variables {
-    cluster_name = "e2e-test"
-		region       = "fra1"
+    name   = "e2e-test"
+    region = "fra1"
   }
   assert {
     condition     = output.cluster_name == "e2e-test"
