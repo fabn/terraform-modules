@@ -9,7 +9,9 @@ run "create_cluster" {
 }
 
 run "tools" {
-  source = "../k8s_cluster_tools"
+	module {
+	  source = "../k8s_cluster_tools"
+	}
   variables {
     cluster_name           = run.create_cluster.outputs.cluster_name
     load_balancer_hostname = "e2e.fabn.dev"
