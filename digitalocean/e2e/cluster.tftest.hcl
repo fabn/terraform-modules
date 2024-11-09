@@ -4,6 +4,7 @@ run "create_cluster" {
 	}
   variables {
     cluster_name = "e2e-test"
+		region.      = "fra1"
   }
   assert {
     condition     = output.cluster_name == "e2e-test"
