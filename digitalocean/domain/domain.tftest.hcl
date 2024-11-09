@@ -1,7 +1,3 @@
-provider "digitalocean" {
-  token = var.do_token
-}
-
 run "create_domain" {
   variables {
     name = "terraform.dev"
