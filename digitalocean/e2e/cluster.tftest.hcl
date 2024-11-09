@@ -1,6 +1,6 @@
 run "create_cluster" {
   assert {
-    condition     = output.cluster.name == "e2e-cluster"
+    condition     = module.e2e_cluster.cluster.cluster.name == "e2e-cluster"
     error_message = "The cluster was not created"
   }
 }

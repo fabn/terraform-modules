@@ -26,8 +26,3 @@ module "e2e_cluster" {
   name   = var.cluster_name
   region = "fra1"
 }
-
-output "cluster" {
-  value = module.e2e_cluster.cluster
-}
-
