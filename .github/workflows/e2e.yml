@@ -71,6 +71,7 @@ jobs:
           TF_LOG: ${{ runner.debug == '1' && 'DEBUG' || 'ERROR' }}
           SOPS_AGE_KEY: ${{ secrets.SOPS_KIND_GITHUB_ACTION }}
           TF_VAR_do_token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          # Default value read from digitalocean provider
           DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
         with:
           working_directory: ${{ matrix.module }}
