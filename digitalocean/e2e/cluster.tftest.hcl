@@ -3,7 +3,7 @@ run "create_cluster" {
     cluster_name = "e2e-test"
   }
   assert {
-    condition     = module.e2e_cluster.digitalocean_kubernetes_cluster.cluster.name == "e2e-test"
+    condition     = module.e2e_cluster.cluster.cluster_name == "e2e-test"
     error_message = "The cluster was not created"
   }
 }
