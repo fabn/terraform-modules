@@ -1,9 +1,12 @@
 run "create_cluster" {
+	module {
+	  source = "../k8s_cluster"
+	}
   variables {
     cluster_name = "e2e-test"
   }
   assert {
-    condition     = module.e2e_cluster.cluster.name == "e2e-test"
+    condition     = output.cluster_name == "e2e-test"
     error_message = "The cluster was not created"
   }
 }
@@ -13,7 +16,7 @@ run "tools" {
 	  source = "../k8s_cluster_tools"
 	}
   variables {
-    cluster_name           = run.create_cluster.module.e2e_cluster.cluster.name
+    cluster_name           = run.create_cluster.output.cluster_name
     load_balancer_hostname = "e2e.fabn.dev"
   }
   # assert {
