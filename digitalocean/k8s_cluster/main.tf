@@ -82,11 +82,17 @@ resource "digitalocean_kubernetes_cluster" "cluster" {
 }
 
 output "cluster" {
-  value = digitalocean_kubernetes_cluster.cluster
+  description = "The full cluster object"
+  sensitive   = true
+  value       = digitalocean_kubernetes_cluster.cluster
 }
 
-output "endpoint" {
-  value = digitalocean_kubernetes_cluster.cluster.endpoint
+output "cluster_id" {
+  value = digitalocean_kubernetes_cluster.cluster.name
+}
+
+output "cluster_name" {
+  value = digitalocean_kubernetes_cluster.cluster.id
 }
 
 # Sample kubernetes provider configuration
