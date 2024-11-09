@@ -26,3 +26,9 @@ module "e2e_cluster" {
   name   = var.cluster_name
   region = "fra1"
 }
+
+module "cluster_tools" {
+  source                 = "../k8s_cluster_tools"
+  cluster_name           = module.e2e_cluster.cluster.name
+  load_balancer_hostname = var.domain_name
+}
