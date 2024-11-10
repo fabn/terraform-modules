@@ -30,6 +30,7 @@ variable "node_size" {
   description = "The size of the nodes to create in the cluster"
   default     = "s-2vcpu-4gb"
   type        = string
+  nullable    = true
 }
 
 variable "auto_scale" {
@@ -49,6 +50,18 @@ variable "auto_scale" {
 # Fetch last kubernetes version available in the region
 data "digitalocean_kubernetes_versions" "available" {}
 
+data "digitalocean_sizes" "cheapest" {
+  sort {
+    key       = "price_hourly"
+    direction = "asc"
+  }
+  sort {
+    // Sort by memory ascendingly
+    key       = "memory"
+    direction = "asc"
+  }
+}
+
 resource "digitalocean_kubernetes_cluster" "cluster" {
   name   = var.name
   region = var.region
@@ -67,7 +80,7 @@ resource "digitalocean_kubernetes_cluster" "cluster" {
 
   node_pool {
     name       = "default"
-    size       = var.node_size
+    size       = coalesce(var.node_size, element(data.digitalocean_sizes.cheapest.sizes, 0).slug)
     node_count = var.node_count
     auto_scale = var.auto_scale.enabled
     min_nodes  = var.auto_scale.min_nodes

@@ -3,8 +3,10 @@ run "create_cluster" {
     source = "../k8s_cluster"
   }
   variables {
-    name   = "e2e-test"
-    region = "fra1"
+    name       = "e2e-test"
+    region     = "fra1"
+    node_count = 1
+    node_size  = null # In this way it will use the cheapest available
   }
   assert {
     condition     = output.cluster_name == "e2e-test"
