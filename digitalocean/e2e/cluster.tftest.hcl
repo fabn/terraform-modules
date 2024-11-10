@@ -26,3 +26,21 @@ run "tools" {
     error_message = "The ingress controller was not installed"
   }
 }
+
+run "domain" {
+  module {
+    source = "../domain"
+  }
+  variables {
+    name = "e2e.fabn.dev"
+    main_records = {
+      root     = run.tools.load_balancer_ip
+      wildcard = run.tools.load_balancer_ip
+    }
+  }
+
+  assert {
+    condition     = output.domain_name == "e2e.fabn.dev"
+    error_message = "The domain was not created"
+  }
+}
