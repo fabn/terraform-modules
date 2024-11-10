@@ -16,15 +16,6 @@ variable "kind" {
   type        = bool
 }
 
-# Passed for tests, not used in the module directly
-variable "do_token" {
-  description = "DigitalOcean API token, used to query the load balancer IP"
-  type        = string
-  default     = null
-  sensitive   = true
-  nullable    = true
-}
-
 variable "digitalocean" {
   description = "Whether the cluster is a digital ocean cluster, if so will enable specific values"
   default     = false
