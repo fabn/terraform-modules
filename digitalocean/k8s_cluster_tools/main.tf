@@ -64,3 +64,7 @@ module "ingress_controller" {
 output "load_balancer_ip" {
   value = module.ingress_controller.load_balancer_ip
 }
+
+output "load_balancer_hostname" {
+  value = var.load_balancer_hostname
+}

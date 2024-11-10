@@ -27,12 +27,22 @@ module "e2e_cluster" {
   region = "fra1"
 }
 
+locals {
+  # This is a quick and dirty hack to delay the tools module until the cluster is ready
+  # Otherwise the tools module will fail because the cluster doesn't exist at plan time
+  name = module.e2e_cluster.cluster.id ? module.e2e_cluster.cluster.name : var.cluster_name
+}
+
 module "tools" {
   source                 = "../k8s_cluster_tools"
-  cluster_name           = module.e2e_cluster.cluster_name
-  load_balancer_hostname = "e2e.fabn.dev"
+  cluster_name           = local.name
+  load_balancer_hostname = "${module.e2e_cluster.cluster.id}.fabn.dev"
 }
 
 output "ip" {
   value = module.tools.load_balancer_ip
+}
+
+output "base_domain" {
+  value = module.tools.load_balancer_hostname
 }
