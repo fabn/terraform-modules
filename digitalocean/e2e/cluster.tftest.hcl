@@ -40,8 +40,18 @@ run "domain" {
   }
 
   assert {
-    condition     = output.domain_name == "e2e.fabn.dev"
+    condition     = output.domain == "e2e.fabn.dev"
     error_message = "The domain was not created"
+  }
+
+  assert {
+    condition     = output.root_domain_ip == run.tools.load_balancer_ip
+    error_message = "The root domain was not created"
+  }
+
+  assert {
+    condition     = output.wildcard_domain_ip == run.tools.load_balancer_ip
+    error_message = "The wildcard domain was not created"
   }
 }
 
