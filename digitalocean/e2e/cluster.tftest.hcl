@@ -44,3 +44,19 @@ run "domain" {
     error_message = "The domain was not created"
   }
 }
+
+# Test DNS record is set correctly
+run "host" {
+  module {
+    source = "../../k8s/http-deployment/host"
+  }
+
+  variables {
+    host = "e2e.fabn.dev"
+  }
+
+  assert {
+    condition     = output.ip == run.tools.load_balancer_ip
+    error_message = "The DNS record was not created"
+  }
+}
