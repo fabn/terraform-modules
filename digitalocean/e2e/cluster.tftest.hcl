@@ -40,7 +40,7 @@ run "domain" {
   }
 
   assert {
-    condition     = output.domain == "e2e.fabn.dev"
+    condition     = output.domain.name == "e2e.fabn.dev"
     error_message = "The domain was not created"
   }
 
