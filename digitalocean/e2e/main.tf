@@ -32,7 +32,7 @@ module "e2e_cluster" {
 locals {
   # This is a quick and dirty hack to delay the tools module until the cluster is ready
   # Otherwise the tools module will fail because the cluster doesn't exist at plan time
-  name = module.e2e_cluster.cluster.id ? module.e2e_cluster.cluster.name : var.cluster_name
+  name = module.e2e_cluster.cluster.id != null ? module.e2e_cluster.cluster.name : var.cluster_name
 }
 
 module "tools" {
