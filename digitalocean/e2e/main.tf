@@ -22,9 +22,11 @@ provider "kubernetes" {
 }
 
 module "e2e_cluster" {
-  source = "../k8s_cluster"
-  name   = var.cluster_name
-  region = "fra1"
+  source     = "../k8s_cluster"
+  name       = var.cluster_name
+  region     = "fra1"
+  node_count = 1
+  node_size  = null # In this way it will use the cheapest available
 }
 
 locals {
