@@ -27,3 +27,12 @@ module "e2e_cluster" {
   region = "fra1"
 }
 
+module "tools" {
+  source                 = "../k8s_cluster_tools"
+  cluster_name           = module.e2e_cluster.cluster_name
+  load_balancer_hostname = "e2e.fabn.dev"
+}
+
+output "ip" {
+  value = module.tools.load_balancer_ip
+}

@@ -1,7 +1,7 @@
 run "create_cluster" {
-	module {
-	  source = "../k8s_cluster"
-	}
+  module {
+    source = "../k8s_cluster"
+  }
   variables {
     name   = "e2e-test"
     region = "fra1"
@@ -13,15 +13,16 @@ run "create_cluster" {
 }
 
 run "tools" {
-	module {
-	  source = "../k8s_cluster_tools"
-	}
+  module {
+    source = "../k8s_cluster_tools"
+  }
   variables {
     cluster_name           = run.create_cluster.cluster_name
     load_balancer_hostname = "e2e.fabn.dev"
   }
-  # assert {
-  #   condition     = module.cluster_tools.ingress_controller.enabled == true
-  #   error_message = "The ingress controller was not enabled"
-  # }
+
+  assert {
+    condition     = output.load_balancer_ip != null
+    error_message = "The ingress controller was not installed"
+  }
 }
