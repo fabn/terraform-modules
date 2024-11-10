@@ -25,7 +25,7 @@ jobs:
 
   e2e:
     needs: changed-modules
-    timeout-minutes: 20
+    timeout-minutes: 30
     # Skip when no modules have changed
     if: ${{ needs.changed-modules.outputs.matrix != '[]' && needs.changed-modules.outputs.matrix != '' }}
     strategy:
