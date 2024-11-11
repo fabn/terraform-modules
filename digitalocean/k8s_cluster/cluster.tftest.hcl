@@ -13,7 +13,7 @@ run "with_null_node_size" {
   }
 
   assert {
-    condition     = one(output.cluster.node_pool).size == "s-1vcpu-1gb"
+    condition     = one(output.cluster.node_pool).size == "s-1vcpu-2gb"
     error_message = "The cheapest node size was not set correctly"
   }
 
