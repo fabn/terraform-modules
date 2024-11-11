@@ -7,6 +7,5 @@ controller:
     enabled: false
   extraArgs:
     publish-status-address: "localhost"
-  # Service annotation to better integration with DigitalOcean Load Balancer
   service:
     type: ClusterIP
