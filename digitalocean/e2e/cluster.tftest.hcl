@@ -6,7 +6,7 @@ run "create_cluster" {
     name       = "e2e-test"
     region     = "fra1"
     node_count = 1
-    # node_size  = null # In this way it will use the cheapest available
+    node_size  = null # In this way it will use the cheapest available
   }
   assert {
     condition     = output.cluster_name == "e2e-test"

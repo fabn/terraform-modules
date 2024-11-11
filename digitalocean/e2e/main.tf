@@ -26,7 +26,7 @@ module "e2e_cluster" {
   name       = var.cluster_name
   region     = "fra1"
   node_count = 1
-  # node_size  = null # In this way it will use the cheapest available
+  node_size  = null # In this way it will use the cheapest available
 }
 
 locals {

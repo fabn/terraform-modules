@@ -51,6 +51,28 @@ variable "auto_scale" {
 data "digitalocean_kubernetes_versions" "available" {}
 
 data "digitalocean_sizes" "cheapest" {
+  filter {
+    key    = "regions"
+    values = [var.region]
+  }
+
+  filter {
+    key    = "available"
+    values = [true]
+  }
+
+  filter {
+    key    = "vcpus"
+    values = [1]
+  }
+
+  # I added this filter to get the cheapest droplet with 1GB of memory, otherwise it will return a 512 droplet
+  # that is not available for K8S
+  filter {
+    key    = "memory"
+    values = [1024]
+  }
+
   sort {
     key       = "price_hourly"
     direction = "asc"
@@ -106,6 +128,21 @@ output "cluster_id" {
 
 output "cluster_name" {
   value = digitalocean_kubernetes_cluster.cluster.name
+}
+
+output "kubernetes_version" {
+  description = "The kubernetes version used in the newly created cluster"
+  value       = data.digitalocean_kubernetes_versions.available.latest_version
+}
+
+output "monthly_cost" {
+  description = "The monthly cost of the cluster in USD"
+  value       = element(data.digitalocean_sizes.cheapest.sizes, 0).price_monthly * var.node_count
+}
+
+output "droplet_slug" {
+  description = "The size of the droplets used in the cluster for default node pool"
+  value       = var.node_size == null ? element(data.digitalocean_sizes.cheapest.sizes, 0).slug : var.node_size
 }
 
 # Sample kubernetes provider configuration
