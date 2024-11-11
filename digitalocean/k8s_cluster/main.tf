@@ -66,11 +66,10 @@ data "digitalocean_sizes" "cheapest" {
     values = [1]
   }
 
-  # I added this filter to get the cheapest droplet with 1GB of memory, otherwise it will return a 512 droplet
-  # that is not available for K8S
+  # Min is 2GB, see doctl kubernetes options sizes
   filter {
     key    = "memory"
-    values = [1024]
+    values = [2048]
   }
 
   sort {
