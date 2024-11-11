@@ -9,8 +9,11 @@ variable "name" {
 
 variable "main_records" {
   description = "The records to create for wildcard and root domain"
-  type        = map(string)
-  default     = {}
+  type = object({
+    wildcard = optional(string)
+    root     = optional(string)
+  })
+  default = {}
 }
 
 # @see https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/record

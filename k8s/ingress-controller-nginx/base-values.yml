@@ -1,0 +1,15 @@
+controller:
+  # Enable ingress class resource as default one
+  ingressClassResource:
+    default: true
+  # Enable configuration at ingress level
+  allowSnippetAnnotations: true
+  # Configmap for nginx
+  config:
+    # Enable brotli compression
+    enable-brotli: "true"
+    # Declare a static cache block to be used in ingresses
+    http-snippet: proxy_cache_path /tmp/nginx_cache levels=1:2 keys_zone=static-cache:10m max_size=10g inactive=60m use_temp_path=off;
+  # Used in newrelic to report queuing time metric
+  proxySetHeaders:
+    X-Request-Start: t=${msec}

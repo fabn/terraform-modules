@@ -24,7 +24,8 @@ jobs:
           files: "**/*.{tf,hcl,env}"
 
   e2e:
-    needs: [changed-modules]
+    needs: changed-modules
+    timeout-minutes: 30
     # Skip when no modules have changed
     if: ${{ needs.changed-modules.outputs.matrix != '[]' && needs.changed-modules.outputs.matrix != '' }}
     strategy:
@@ -70,6 +71,7 @@ jobs:
           TF_LOG: ${{ runner.debug == '1' && 'DEBUG' || 'ERROR' }}
           SOPS_AGE_KEY: ${{ secrets.SOPS_KIND_GITHUB_ACTION }}
           TF_VAR_do_token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          # Default value read from digitalocean provider
           DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
         with:
           working_directory: ${{ matrix.module }}
