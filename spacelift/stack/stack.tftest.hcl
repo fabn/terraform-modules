@@ -90,6 +90,11 @@ run "with_dependencies" {
   }
 
   assert {
+    condition     = spacelift_stack_dependency_reference.edge_content["DB_CONNECTION_STRING@foo => APP_DB_URL@this"].input_name == "TF_VAR_APP_DB_URL"
+    error_message = "Dependency reference was not set"
+  }
+
+  assert {
     condition = alltrue([
       output.edges["DB_CONNECTION_STRING@foo => APP_DB_URL@this"].stack == "foo",
       output.edges["DB_CONNECTION_STRING@foo => APP_DB_URL@this"].output == "DB_CONNECTION_STRING",

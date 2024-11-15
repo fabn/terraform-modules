@@ -30,5 +30,5 @@ resource "spacelift_stack_dependency_reference" "edge_content" {
   for_each            = local.input_output_maps
   stack_dependency_id = spacelift_stack_dependency.edges[each.value.stack].id
   output_name         = each.value.output
-  input_name          = each.value.input
+  input_name          = "TF_VAR_${each.value.input}"
 }
