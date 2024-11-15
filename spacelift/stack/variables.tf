@@ -62,3 +62,19 @@ variable "terraform_variables" {
   default   = {}
   sensitive = true
 }
+
+variable "depends_from_stack" {
+  description = "Stack to depend from"
+  type = object({
+    id = string
+  })
+  default = null
+}
+
+variable "dependencies_map" {
+  description = "Map of dependencies"
+  type = map(object({
+    output_name = string
+    input_name  = string
+  }))
+}
