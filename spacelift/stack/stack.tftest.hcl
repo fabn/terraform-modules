@@ -88,4 +88,13 @@ run "with_dependencies" {
     condition     = length(keys(output.edges)) == 3 # One for each input => output
     error_message = "Dependency reference was not set"
   }
+
+  assert {
+    condition = alltrue([
+      output.edges["DB_CONNECTION_STRING@foo => APP_DB_URL@this"].stack == "foo",
+      output.edges["DB_CONNECTION_STRING@foo => APP_DB_URL@this"].output == "DB_CONNECTION_STRING",
+      output.edges["DB_CONNECTION_STRING@foo => APP_DB_URL@this"].input == "APP_DB_URL"
+    ])
+    error_message = "Dependency reference was not set"
+  }
 }

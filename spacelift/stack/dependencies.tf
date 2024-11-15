@@ -6,8 +6,8 @@ locals {
     for stack, values in var.dependencies : [
       for key, value in values : {
         stack  = stack
-        input  = key
-        output = value
+        input  = value
+        output = key
       }
     ]
   ])
