@@ -62,3 +62,9 @@ variable "terraform_variables" {
   default   = {}
   sensitive = true
 }
+
+variable "dependencies" {
+  description = "Map of dependencies from other stacks"
+  type        = map(map(string))
+  default     = {}
+}
