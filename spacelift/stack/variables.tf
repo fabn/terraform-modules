@@ -73,8 +73,6 @@ variable "depends_from_stack" {
 
 variable "dependencies_map" {
   description = "Map of dependencies"
-  type = map(object({
-    output_name = string
-    input_name  = string
-  }))
+  type        = map(string)
+  default     = {}
 }
