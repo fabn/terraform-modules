@@ -1,6 +1,22 @@
 # Stub provider interactions
 mock_provider "spacelift" {}
 
+variables {
+  name         = "Test"
+  project_root = "/"
+}
+
+run "simple" {
+  assert {
+    condition     = spacelift_stack.stack.name == "Test"
+    error_message = "The stack was not created"
+  }
+  assert {
+    condition     = output.stack_id == spacelift_stack.stack.id
+    error_message = "Stack ID was not set as output"
+  }
+}
+
 run "create_context" {
   override_data {
     target = data.spacelift_space.root
@@ -10,8 +26,6 @@ run "create_context" {
   }
 
   variables {
-    project_root = "/"
-    name         = "Test"
     secrets = {
       FOO = "bar"
     }
