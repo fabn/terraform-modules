@@ -69,6 +69,7 @@ run "with_dependencies" {
       }
       "bar" = {
         "APP_DB_URL" = "DB_CONNECTION_STRING"
+        "FOO"        = "BAR"
       }
     }
   }
@@ -79,7 +80,12 @@ run "with_dependencies" {
   }
 
   assert {
-    condition     = contains(output.stack_edges, "foo") && contains(output.stack_edges, "bar")
+    condition     = contains(output.dependencies, "foo") && contains(output.dependencies, "bar")
     error_message = "Dependencies were not set in output"
+  }
+
+  assert {
+    condition     = length(keys(output.edges)) == 3 # One for each input => output
+    error_message = "Dependency reference was not set"
   }
 }

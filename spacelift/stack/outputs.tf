@@ -9,6 +9,12 @@ output "stack_id" {
   value       = spacelift_stack.stack.id
 }
 
-output "stack_edges" {
-  value = local.stack_dependencies
+output "dependencies" {
+  description = "The list of stacks this stack depends on"
+  value       = local.stack_dependencies
+}
+
+output "edges" {
+  description = "Content of the edges as map"
+  value       = local.input_output_maps
 }
