@@ -8,3 +8,7 @@ output "stack_id" {
   description = "Managed stack identifier"
   value       = spacelift_stack.stack.id
 }
+
+output "stack_edges" {
+  value = local.stack_dependencies
+}

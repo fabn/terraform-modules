@@ -60,3 +60,26 @@ run "create_context" {
     error_message = "Labels were not set"
   }
 }
+
+run "with_dependencies" {
+  variables {
+    dependencies = {
+      "foo" = {
+        "DB_CONNECTION_STRING" = "APP_DB_URL"
+      }
+      "bar" = {
+        "APP_DB_URL" = "DB_CONNECTION_STRING"
+      }
+    }
+  }
+
+  assert {
+    condition     = spacelift_stack_dependency.edges["foo"] != null && spacelift_stack_dependency.edges["bar"] != null
+    error_message = "Edges were not set"
+  }
+
+  assert {
+    condition     = contains(output.stack_edges, "foo") && contains(output.stack_edges, "bar")
+    error_message = "Dependencies were not set in output"
+  }
+}
