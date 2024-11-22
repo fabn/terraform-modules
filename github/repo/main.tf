@@ -88,6 +88,10 @@ resource "github_repository" "repo" {
   squash_merge_commit_title   = "PR_TITLE"
   vulnerability_alerts        = var.has_dependabot
   auto_init                   = var.auto_init
+  # Ensure repositories are never deleted via terraform
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 # Configure a secret for each passed value
