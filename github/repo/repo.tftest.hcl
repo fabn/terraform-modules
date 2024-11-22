@@ -49,3 +49,16 @@ run "create_repo_with_team_access" {
     error_message = "The team grants was not created"
   }
 }
+
+run "create_repo_with_variables" {
+  variables {
+    variables = {
+      FOO = "bar"
+    }
+  }
+
+  assert {
+    condition     = github_actions_variable.variables["FOO"].value == "bar"
+    error_message = "The variable was not created"
+  }
+}

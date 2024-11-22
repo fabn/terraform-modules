@@ -47,10 +47,17 @@ variable "secrets" {
   sensitive = true
 }
 
-variable "digitalocean_deploy" {
-  description = "Whether the repository could deploy using DigitalOcean"
+variable "variables" {
+  description = "A map of variables to configure in the repository (global secrets)"
+  type        = map(string)
+  default     = {}
+  sensitive   = false
+}
+
+variable "auto_init" {
+  description = "Set to true when creating new repositories"
+  default     = true
   type        = bool
-  default     = false
 }
 
 variable "shared_workflows" {
@@ -80,6 +87,7 @@ resource "github_repository" "repo" {
   squash_merge_commit_message = "BLANK"
   squash_merge_commit_title   = "PR_TITLE"
   vulnerability_alerts        = var.has_dependabot
+  auto_init                   = var.auto_init
 }
 
 # Configure a secret for each passed value
@@ -88,6 +96,14 @@ resource "github_actions_secret" "secrets" {
   repository      = github_repository.repo.name
   secret_name     = each.key
   plaintext_value = each.value
+}
+
+# Configure a variable for each passed value (non sensitive)
+resource "github_actions_variable" "variables" {
+  for_each      = var.variables
+  repository    = github_repository.repo.name
+  variable_name = each.key
+  value         = each.value
 }
 
 # Expose workflow files to other repositories in our organization
