@@ -63,6 +63,12 @@ variable "max_runners" {
   type        = number
 }
 
+variable "controller_enabled" {
+  description = "Enable the controller chart"
+  type        = bool
+  default     = true
+}
+
 variable "controller_namespace" {
   description = "The namespace where to install the controller chart"
   type        = string

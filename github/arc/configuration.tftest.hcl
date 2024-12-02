@@ -15,9 +15,24 @@ run "controller_overrides" {
 
   assert {
     condition = alltrue([
-      length(helm_release.arc.values) == 1,
-      yamldecode(helm_release.arc.values[0]).controller.replicaCount == 2,
+      length(helm_release.arc.0.values) == 1,
+      yamldecode(helm_release.arc.0.values[0]).controller.replicaCount == 2,
     ])
     error_message = "YAML not correctly encoded"
+  }
+}
+
+run "runners_only" {
+  command = plan
+  variables {
+    github_token       = "gx_xxxxxxx"
+    controller_enabled = false
+  }
+
+  assert {
+    condition = alltrue([
+      length(helm_release.arc) == 0,
+    ])
+    error_message = "Controller should not be enabled"
   }
 }
