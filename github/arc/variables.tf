@@ -35,7 +35,7 @@ variable "github_config_secret" {
 
 variable "min_runners" {
   description = "The min number of idle runners"
-  default     = 0
+  default     = 1
   type        = number
 }
 
