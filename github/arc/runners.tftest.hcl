@@ -12,7 +12,7 @@ provider "helm" {
 
 variables {
   github_config_url     = "https://github.com/fabn/terraform-modules"
-  scale_set_name_prefix = "arc-test-"
+  scale_set_name_prefix = "arc-test"
   github_token          = "gh-some-secret-token"
 }
 

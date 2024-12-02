@@ -28,8 +28,10 @@ resource "helm_release" "runners" {
   namespace  = one(kubernetes_namespace_v1.runners.metadata).name
   values = [
     # Auth credentials, will be marked as sensitive
-    # yamlencode(merge(local.app_config, local.token_authentication)),
-    nonsensitive(yamlencode(merge(local.app_config, local.token_authentication))),
+    templatefile("${path.module}/auth.yml", {
+      github_token : var.github_token,
+      # github_config_secret: var.github_config_secret,
+    }),
   ]
 
   set {
