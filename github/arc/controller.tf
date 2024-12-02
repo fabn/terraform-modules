@@ -10,7 +10,7 @@ resource "helm_release" "arc" {
   version   = var.controller_version
   namespace = one(kubernetes_namespace_v1.arc_system.metadata).name
   values = [
-    yamlencode(var.controller_override_values)
+    var.controller_override_values
   ]
 }
 

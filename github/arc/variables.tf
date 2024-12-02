@@ -1,6 +1,10 @@
 variable "github_config_url" {
   description = "GitHub configuration url for this ScaleSet"
   type        = string
+  validation {
+    condition     = length(var.github_config_url) > 0
+    error_message = "GitHub configuration url must be set"
+  }
 }
 
 # # runnerScaleSetName: ""
@@ -73,9 +77,9 @@ variable "controller_version" {
 
 
 variable "controller_override_values" {
-  description = "Controller additional values.yaml"
-  type        = map(any)
-  default     = {}
+  description = "Controller additional values in YAML format"
+  type        = string
+  default     = ""
 }
 
 variable "runners_namespace" {
