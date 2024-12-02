@@ -7,7 +7,11 @@ locals {
     "githubConfigSecret.github_token" = var.github_token
   } : {}
 
-  scale_set_name = coalesce(var.runners_scale_set_name, var.runners_release_name)
+  scale_set_name = var.scale_set_name_prefix != null ? "${var.scale_set_name_prefix}-${random_id.name.hex}" : coalesce(var.runners_scale_set_name, var.runners_release_name)
+}
+
+resource "random_id" "name" {
+  byte_length = 4 # will be used for the scale set name produce 8 hex chars
 }
 
 resource "kubernetes_namespace_v1" "runners" {

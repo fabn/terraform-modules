@@ -11,6 +11,13 @@ variable "runners_scale_set_name" {
   default     = null
 }
 
+variable "scale_set_name_prefix" {
+  description = "If given it will generate a random name for the scale set"
+  type        = string
+  default     = null
+  nullable    = true
+}
+
 # See https://github.com/actions/actions-runner-controller/blob/master/charts/gha-runner-scale-set/values.yaml
 variable "github_token" {
   sensitive   = true
