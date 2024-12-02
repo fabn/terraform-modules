@@ -1,12 +1,4 @@
 locals {
-  app_config = var.github_config_secret != null ? {
-    for k, v in var.github_config_secret : "githubConfigSecret.${k}" => v
-  } : {}
-
-  token_authentication = var.github_token != null ? {
-    "githubConfigSecret.github_token" = var.github_token
-  } : {}
-
   scale_set_name = var.scale_set_name_prefix != null ? "${var.scale_set_name_prefix}-${random_id.name.hex}" : coalesce(var.runners_scale_set_name, var.runners_release_name)
 }
 
@@ -30,7 +22,7 @@ resource "helm_release" "runners" {
     # Auth credentials, will be marked as sensitive
     templatefile("${path.module}/auth.yml", {
       github_token : var.github_token,
-      # github_config_secret: var.github_config_secret,
+      github_config_secret : var.github_config_secret,
     }),
   ]
 

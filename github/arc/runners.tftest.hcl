@@ -27,6 +27,26 @@ run "authentication" {
   expect_failures = [helm_release.runners]
 }
 
+run "app_authentication" {
+  command = plan
+  variables {
+    github_config_secret = {
+      github_app_id              = "XXXX"
+      github_app_installation_id = "YYYY"
+      github_app_private_key     = "ZZZZ"
+    }
+  }
+
+  assert {
+    condition = alltrue([
+      length(helm_release.runners.values) == 1,
+      yamldecode(helm_release.runners.values[0]).githubConfigSecret.github_app_id == "XXXX",
+      yamldecode(helm_release.runners.values[0]).githubConfigSecret.github_app_installation_id == "YYYY",
+    ])
+    error_message = "Configure auth within yaml file"
+  }
+}
+
 run "runners" {
   assert {
     condition     = startswith(output.scale_set_name, "arc-test-")
