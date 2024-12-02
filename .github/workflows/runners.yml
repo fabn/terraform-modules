@@ -1,0 +1,17 @@
+name: ScaleSet Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      runners:
+        description: Runners scale set to test
+        type: string
+        required: true
+
+jobs:
+  test:
+    name: Test the runners
+    runs-on: ${{ inputs.runners }}
+    steps:
+      - name: Running on ${{ inputs.runners }}
+        run: echo "Hello world!"
