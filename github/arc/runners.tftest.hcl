@@ -14,6 +14,7 @@ variables {
   github_config_url     = "https://github.com/fabn/terraform-modules"
   scale_set_name_prefix = "arc-test"
   github_token          = "gh-some-secret-token"
+  runner_group          = "e2e-tests"
 }
 
 run "authentication" {

@@ -39,6 +39,11 @@ resource "helm_release" "runners" {
     value = local.scale_set_name
   }
 
+  set {
+    name  = "runnerGroup"
+    value = var.runner_group
+  }
+
   # Mandatory to link the scale set to a given repo/organization
   set {
     name  = "githubConfigUrl"
