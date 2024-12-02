@@ -1,8 +1,9 @@
 locals {
-  scale_set_name = var.scale_set_name_prefix != null ? "${var.scale_set_name_prefix}-${random_id.name.hex}" : coalesce(var.runners_scale_set_name, var.runners_release_name)
+  scale_set_name = var.scale_set_name_prefix != null ? "${var.scale_set_name_prefix}-${random_id.name.0.hex}" : coalesce(var.runners_scale_set_name, var.runners_release_name)
 }
 
 resource "random_id" "name" {
+  count       = var.scale_set_name_prefix != null ? 1 : 0
   byte_length = 4 # will be used for the scale set name produce 8 hex chars
 }
 
