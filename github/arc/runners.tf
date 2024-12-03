@@ -68,17 +68,17 @@ output "scale_set_names" {
   value       = [for k, v in helm_release.runners : helm_release.runners[k].name]
 }
 
-data "kubernetes_resource" "scale_sets" {
-  for_each    = var.runners
-  api_version = "actions.github.com/v1alpha1"
-  kind        = "AutoscalingRunnerSet"
-  metadata {
-    name      = each.key
-    namespace = one(kubernetes_namespace_v1.runners.metadata).name
-  }
-  depends_on = [helm_release.arc]
-}
-
-output "scale_sets" {
-  value = data.kubernetes_resource.scale_sets
-}
+# data "kubernetes_resource" "scale_sets" {
+#   for_each    = var.runners
+#   api_version = "actions.github.com/v1alpha1"
+#   kind        = "AutoscalingRunnerSet"
+#   metadata {
+#     name      = each.key
+#     namespace = one(kubernetes_namespace_v1.runners.metadata).name
+#   }
+#   depends_on = [helm_release.arc]
+# }
+#
+# output "scale_sets" {
+#   value = data.kubernetes_resource.scale_sets
+# }
