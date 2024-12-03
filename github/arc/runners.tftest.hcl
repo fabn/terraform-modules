@@ -35,21 +35,30 @@ run "app_authentication" {
       github_app_installation_id = "YYYY"
       github_app_private_key     = "ZZZZ"
     }
+    runners = {
+      foo = {}
+    }
   }
 
   assert {
     condition = alltrue([
-      length(helm_release.runners.values) == 1,
-      yamldecode(helm_release.runners.values[0]).githubConfigSecret.github_app_id == "XXXX",
-      yamldecode(helm_release.runners.values[0]).githubConfigSecret.github_app_installation_id == "YYYY",
+      length(helm_release.runners["foo"].values) == 1,
+      yamldecode(helm_release.runners["foo"].values[0]).githubConfigSecret.github_app_id == "XXXX",
+      yamldecode(helm_release.runners["foo"].values[0]).githubConfigSecret.github_app_installation_id == "YYYY",
     ])
     error_message = "Configure auth within yaml file"
   }
 }
 
 run "runners" {
+  variables {
+    runners = {
+      foo = {}
+    }
+  }
+
   assert {
-    condition     = startswith(output.scale_set_name, "arc-test-")
+    condition     = startswith(output.scale_set_names["foo"], "arc-test-")
     error_message = "Configure a random prefix for the scale set name"
   }
 }
