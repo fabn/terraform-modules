@@ -60,11 +60,13 @@ run "custom_pod_spec" {
     github_token = "gx_xxxxxxx"
     runners = {
       foo = {
-        spec = {
-          resources = {
-            limits = {
-              cpu    = "1"
-              memory = "2Gi"
+        template = {
+          spec = {
+            resources = {
+              limits = {
+                cpu    = "1"
+                memory = "2Gi"
+              }
             }
           }
         }
@@ -74,10 +76,10 @@ run "custom_pod_spec" {
 
   assert {
     condition = alltrue([
-      true,
+      # true,
       # length(output.scale_sets) == 1,
       # data.kubernetes_resource.scale_sets["foo"] != null,
-      # yamldecode(helm_release.runners.values["foo"]).spec.resources.limits.cpu == "1",
+      yamldecode(helm_release.runners["foo"].values[1]).template.spec.resources.limits.cpu == "1",
       # yamldecode(helm_release.runners.values[0]).spec.resources.limits.memory == "2Gi",
     ])
     error_message = "Custom pod spec not correctly configured"

@@ -93,8 +93,8 @@ variable "runners" {
     min_runners  = optional(number)
     max_runners  = optional(number)
     runner_group = optional(string)
-    spec = optional(object({
-      replicas = optional(number)
+    template = optional(object({
+      spec = any
     }))
   }))
 }

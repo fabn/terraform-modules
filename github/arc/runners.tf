@@ -22,6 +22,7 @@ resource "helm_release" "runners" {
       github_token : var.github_token,
       github_config_secret : var.github_config_secret,
     }),
+    yamlencode({ template = coalesce(each.value.template, {}) }),
   ]
 
   set {

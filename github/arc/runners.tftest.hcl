@@ -45,7 +45,7 @@ run "app_authentication" {
 
   assert {
     condition = alltrue([
-      length(helm_release.runners["foo"].values) == 1,
+      length(helm_release.runners["foo"].values) >= 1,
       yamldecode(helm_release.runners["foo"].values[0]).githubConfigSecret.github_app_id == "XXXX",
       yamldecode(helm_release.runners["foo"].values[0]).githubConfigSecret.github_app_installation_id == "YYYY",
     ])
