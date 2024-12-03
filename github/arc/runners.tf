@@ -1,9 +1,5 @@
-locals {
-  scale_set_name = var.scale_set_name_prefix != null ? "${var.scale_set_name_prefix}-${random_id.name.0.hex}" : coalesce(var.runners_scale_set_name, var.runners_release_name)
-}
-
 resource "random_id" "name" {
-  count       = var.scale_set_name_prefix != null ? 1 : 0
+  for_each    = var.scale_set_name_prefix ? var.runners : {}
   byte_length = 4 # will be used for the scale set name produce 8 hex chars
 }
 
@@ -16,7 +12,7 @@ resource "kubernetes_namespace_v1" "runners" {
 resource "helm_release" "runners" {
   for_each   = var.runners
   depends_on = [helm_release.arc] # Wait for controller to be up and running
-  name       = "scale-set-${each.key}"
+  name       = var.scale_set_name_prefix ? "${var.scale_set_name_prefix}-${random_id.name[each.key].hex}" : "scale-set-${each.key}"
   chart      = "oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set"
   version    = var.runners_version
   namespace  = one(kubernetes_namespace_v1.runners.metadata).name
@@ -33,12 +29,9 @@ resource "helm_release" "runners" {
     value = each.key
   }
 
-  dynamic "set" {
-    for_each = each.value.runner_group[*]
-    content {
-      name  = "runnerGroup"
-      value = each.value.runner_group
-    }
+  set {
+    name  = "runnerGroup"
+    value = coalesce(each.value.runner_group, var.runner_group, "default")
   }
 
   # Mandatory to link the scale set to a given repo/organization

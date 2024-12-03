@@ -88,12 +88,6 @@ variable "runners_namespace" {
   default     = "arc-runners"
 }
 
-variable "runners_release_name" {
-  description = "The name of the helm release for the runners"
-  type        = string
-  default     = "arc-runners"
-}
-
 variable "runners_version" {
   description = "The version of the scale-set chart to install (null means latest version)"
   default     = null
