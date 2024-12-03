@@ -7,23 +7,15 @@ variable "github_config_url" {
   }
 }
 
-# # runnerScaleSetName: ""
-variable "runners_scale_set_name" {
-  description = "The name of scale set that will be used into workflow configurations"
-  type        = string
-  nullable    = true
-  default     = null
-}
-
 variable "scale_set_name_prefix" {
-  description = "If given it will generate a random name for the scale set"
+  description = "If given it will generate a random name for the scale sets"
   type        = string
   default     = null
   nullable    = true
 }
 
 variable "runner_group" {
-  description = "A custom runner group to use for the scale set"
+  description = "A custom runner group to use for the scale sets"
   type        = string
   default     = null
   nullable    = true

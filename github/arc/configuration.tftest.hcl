@@ -34,6 +34,7 @@ run "multiple_runners" {
 
   assert {
     condition = alltrue([
+      kubernetes_namespace_v1.runners.metadata.0.name == var.runners_namespace,
       length(helm_release.runners) == 2,
       helm_release.runners["foo"] != null,
       helm_release.runners["bar"] != null,
