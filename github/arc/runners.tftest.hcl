@@ -61,7 +61,7 @@ run "runners" {
   }
 
   assert {
-    condition     = startswith(output.scale_set_names["foo"], "arc-test-")
+    condition     = startswith(output.scale_set_names[0], "arc-test-")
     error_message = "Configure a random prefix for the scale set name"
   }
 }
