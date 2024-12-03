@@ -15,24 +15,29 @@ run "controller_overrides" {
 
   assert {
     condition = alltrue([
-      length(helm_release.arc.0.values) == 1,
-      yamldecode(helm_release.arc.0.values[0]).controller.replicaCount == 2,
+      length(helm_release.arc.values) == 1,
+      yamldecode(helm_release.arc.values[0]).controller.replicaCount == 2,
     ])
     error_message = "YAML not correctly encoded"
   }
 }
 
-run "runners_only" {
+run "multiple_runners" {
   command = plan
   variables {
-    github_token       = "gx_xxxxxxx"
-    controller_enabled = false
+    github_token = "gx_xxxxxxx"
+    runners = {
+      foo = {}
+      bar = {}
+    }
   }
 
   assert {
     condition = alltrue([
-      length(helm_release.arc) == 0,
+      length(helm_release.runners) == 1,
+      helm_release.runners["foo"] != null,
+      helm_release.runners["bar"] != null,
     ])
-    error_message = "Controller should not be enabled"
+    error_message = "Multiple runners not correctly configured"
   }
 }

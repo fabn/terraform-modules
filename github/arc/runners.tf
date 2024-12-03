@@ -30,7 +30,7 @@ resource "helm_release" "runners" {
 
   set {
     name  = "runnerScaleSetName"
-    value = each.value.name
+    value = each.key
   }
 
   dynamic "set" {

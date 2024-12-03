@@ -63,12 +63,6 @@ variable "max_runners" {
   type        = number
 }
 
-variable "controller_enabled" {
-  description = "Enable the controller chart"
-  type        = bool
-  default     = true
-}
-
 variable "controller_namespace" {
   description = "The namespace where to install the controller chart"
   type        = string
@@ -110,7 +104,6 @@ variable "runners" {
   description = "The runners scale-set to deploy"
   default     = {}
   type = map(object({
-    name         = string
     min_runners  = optional(number)
     max_runners  = optional(number)
     runner_group = optional(string)
