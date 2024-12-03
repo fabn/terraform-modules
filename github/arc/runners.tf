@@ -80,5 +80,5 @@ data "kubernetes_resource" "scale_sets" {
 }
 
 output "scale_sets" {
-  value = [for k, v in data.kubernetes_resource.scale_sets : v]
+  value = data.kubernetes_resource.scale_sets
 }

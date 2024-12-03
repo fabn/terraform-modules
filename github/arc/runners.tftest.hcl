@@ -22,9 +22,12 @@ run "authentication" {
   variables {
     github_token         = null
     github_config_secret = null
+    runners = {
+      foo = {}
+    }
   }
 
-  expect_failures = [helm_release.runners]
+  expect_failures = [helm_release.runners["foo"]]
 }
 
 run "app_authentication" {
