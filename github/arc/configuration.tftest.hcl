@@ -56,19 +56,17 @@ run "multiple_runners" {
 }
 
 run "custom_pod_spec" {
+  command = plan
   variables {
     github_token = "gx_xxxxxxx"
     runners = {
       foo = {
-        template = {
-          spec = {
-            resources = {
-              limits = {
-                cpu    = "1"
-                memory = "2Gi"
-              }
-            }
-          }
+        requests = {
+          cpu    = "0.5"
+          memory = "1Gi"
+        }
+        limits = {
+          memory = "2Gi"
         }
       }
     }
@@ -76,11 +74,8 @@ run "custom_pod_spec" {
 
   assert {
     condition = alltrue([
-      # true,
-      # length(output.scale_sets) == 1,
-      # data.kubernetes_resource.scale_sets["foo"] != null,
-      yamldecode(helm_release.runners["foo"].values[1]).template.spec.resources.limits.cpu == "1",
-      # yamldecode(helm_release.runners.values[0]).spec.resources.limits.memory == "2Gi",
+      yamldecode(helm_release.runners["foo"].values[1]).template.spec.resources.requests.cpu == "0.5",
+      yamldecode(helm_release.runners["foo"].values[1]).template.spec.resources.limits.memory == "2Gi",
     ])
     error_message = "Custom pod spec not correctly configured"
   }

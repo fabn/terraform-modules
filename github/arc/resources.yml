@@ -1,0 +1,28 @@
+template:
+  spec:
+    containers:
+      # Default content in values
+      - name: runner
+        image: ghcr.io/actions/actions-runner:latest
+        command: ["/home/runner/run.sh"]
+        %{ if requests != null || limits != null }
+        resources:
+          %{ if limits != null }
+          limits:
+            %{ if limits.memory != null }
+            memory: ${ limits.memory }
+            %{ endif }
+            %{ if limits.cpu != null }
+            cpu: ${ limits.cpu }
+            %{ endif }
+          %{ endif }
+          %{ if requests != null }
+          requests:
+            %{ if requests.memory != null }
+            memory: ${ requests.memory }
+            %{ endif }
+            %{ if requests.cpu != null }
+            cpu: ${ requests.cpu }
+            %{ endif }
+          %{ endif }
+        %{ endif }

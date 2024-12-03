@@ -93,8 +93,13 @@ variable "runners" {
     min_runners  = optional(number)
     max_runners  = optional(number)
     runner_group = optional(string)
-    template = optional(object({
-      spec = any
+    requests = optional(object({
+      cpu    = optional(string)
+      memory = optional(string)
+    }))
+    limits = optional(object({
+      cpu    = optional(string)
+      memory = optional(string)
     }))
   }))
 }

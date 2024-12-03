@@ -22,7 +22,10 @@ resource "helm_release" "runners" {
       github_token : var.github_token,
       github_config_secret : var.github_config_secret,
     }),
-    yamlencode({ template = coalesce(each.value.template, {}) }),
+    templatefile("${path.module}/resources.yml", {
+      requests : each.value.requests
+      limits : each.value.limits
+    }),
   ]
 
   set {
@@ -68,18 +71,3 @@ output "scale_set_names" {
   description = "The name of the deployed scale set to use in workflow files"
   value       = [for k, v in helm_release.runners : helm_release.runners[k].name]
 }
-
-# data "kubernetes_resource" "scale_sets" {
-#   for_each    = var.runners
-#   api_version = "actions.github.com/v1alpha1"
-#   kind        = "AutoscalingRunnerSet"
-#   metadata {
-#     name      = each.key
-#     namespace = one(kubernetes_namespace_v1.runners.metadata).name
-#   }
-#   depends_on = [helm_release.arc]
-# }
-#
-# output "scale_sets" {
-#   value = data.kubernetes_resource.scale_sets
-# }
