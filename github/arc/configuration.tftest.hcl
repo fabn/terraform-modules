@@ -55,14 +55,14 @@ run "multiple_runners" {
   }
 }
 
-run "custom_pod_spec" {
+run "custom_pod_resources" {
   command = plan
   variables {
     github_token = "gx_xxxxxxx"
     runners = {
       foo = {
         requests = {
-          cpu    = "0.5"
+          cpu    = "500m"
           memory = "1Gi"
         }
         limits = {
@@ -74,8 +74,10 @@ run "custom_pod_spec" {
 
   assert {
     condition = alltrue([
-      yamldecode(helm_release.runners["foo"].values[1]).template.spec.resources.requests.cpu == "0.5",
-      yamldecode(helm_release.runners["foo"].values[1]).template.spec.resources.limits.memory == "2Gi",
+      yamldecode(helm_release.runners["foo"].values[1]).template.spec.containers[0].name == "runner",
+      yamldecode(helm_release.runners["foo"].values[1]).template.spec.containers[0].resources.limits.memory == "2Gi",
+      yamldecode(helm_release.runners["foo"].values[1]).template.spec.containers[0].resources.requests.memory == "1Gi",
+      yamldecode(helm_release.runners["foo"].values[1]).template.spec.containers[0].resources.requests.cpu == "500m",
     ])
     error_message = "Custom pod spec not correctly configured"
   }
