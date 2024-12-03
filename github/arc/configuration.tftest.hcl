@@ -42,3 +42,30 @@ run "multiple_runners" {
     error_message = "Multiple runners not correctly configured"
   }
 }
+
+run "custom_pod_spec" {
+  variables {
+    github_token = "gx_xxxxxxx"
+    runners = {
+      foo = {
+        spec = {
+          resources = {
+            limits = {
+              cpu    = "1"
+              memory = "2Gi"
+            }
+          }
+        }
+      }
+    }
+  }
+
+  assert {
+    condition = alltrue([
+      length(output.scale_sets) == 1,
+      # yamldecode(helm_release.runners.values["foo"]).spec.resources.limits.cpu == "1",
+      # yamldecode(helm_release.runners.values[0]).spec.resources.limits.memory == "2Gi",
+    ])
+    error_message = "Custom pod spec not correctly configured"
+  }
+}

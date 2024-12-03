@@ -68,8 +68,14 @@ output "scale_set_names" {
   value       = [for k, v in helm_release.runners : helm_release.runners[k].name]
 }
 
-output "runner_groups" {
-  depends_on  = [helm_release.runners]
-  description = "The list of groups created"
-  value       = compact(distinct([for k, v in helm_release.runners : var.runners[k].runner_group]))
+data "kubernetes_resources" "scale_sets" {
+  # for_each = var.runners
+  api_version = "actions.github.com/v1alpha1"
+  kind        = "AutoscalingRunnerSet"
+  depends_on  = [helm_release.arc]
+  namespace   = one(kubernetes_namespace_v1.runners.metadata).name
+}
+
+output "scale_sets" {
+  value = data.kubernetes_resources.scale_sets.objects
 }
