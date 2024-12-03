@@ -105,3 +105,14 @@ variable "runners_version" {
   default     = null
   nullable    = true
 }
+
+variable "runners" {
+  description = "The runners scale-set to deploy"
+  default     = {}
+  type = map(object({
+    name         = string
+    min_runners  = optional(number)
+    max_runners  = optional(number)
+    runner_group = optional(string)
+  }))
+}
