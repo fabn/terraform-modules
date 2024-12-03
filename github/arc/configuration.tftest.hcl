@@ -34,7 +34,7 @@ run "multiple_runners" {
 
   assert {
     condition = alltrue([
-      length(helm_release.runners) == 1,
+      length(helm_release.runners) == 2,
       helm_release.runners["foo"] != null,
       helm_release.runners["bar"] != null,
     ])
