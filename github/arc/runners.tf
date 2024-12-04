@@ -72,3 +72,14 @@ output "scale_set_names" {
   description = "The name of the deployed scale set to use in workflow files"
   value       = [for k, v in helm_release.runners : helm_release.runners[k].name]
 }
+
+output "config" {
+  value = nonsensitive(var.github_config_secret)
+}
+
+output "yaml" {
+  value = templatefile("${path.module}/auth.yml", {
+    github_token : nonsensitive(var.github_token),
+    github_config_secret : nonsensitive(var.github_config_secret),
+  })
+}
