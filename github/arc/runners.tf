@@ -16,7 +16,7 @@ resource "helm_release" "runners" {
   chart      = "oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set"
   version    = var.runners_version
   namespace  = one(kubernetes_namespace_v1.runners.metadata).name
-  values = [
+  values = compact([
     # Auth credentials, will be marked as sensitive
     templatefile("${path.module}/auth.yml", {
       github_token : var.github_token,
@@ -26,7 +26,8 @@ resource "helm_release" "runners" {
       requests : each.value.requests
       limits : each.value.limits
     }),
-  ]
+    each.value.values != null ? each.value.values : null
+  ])
 
   set {
     name  = "runnerScaleSetName"

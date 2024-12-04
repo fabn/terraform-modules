@@ -82,3 +82,28 @@ run "custom_pod_resources" {
     error_message = "Custom pod spec not correctly configured"
   }
 }
+
+run "pod_values" {
+  command = plan
+  variables {
+    github_token = "gx_xxxxxxx"
+    runners = {
+      foo = {
+        values = yamlencode({
+          template = {
+            spec = {
+              replicas = 2
+            }
+          }
+        })
+      }
+    }
+  }
+
+  assert {
+    condition = alltrue([
+      yamldecode(helm_release.runners["foo"].values[2]).template.spec.replicas == 2,
+    ])
+    error_message = "Custom values not correctly configured"
+  }
+}

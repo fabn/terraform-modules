@@ -101,5 +101,6 @@ variable "runners" {
       cpu    = optional(string)
       memory = optional(string)
     }))
+    values = optional(string)
   }))
 }
