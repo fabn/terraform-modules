@@ -83,9 +83,10 @@ variable "runners" {
   description = "The runners scale-set to deploy"
   default     = {}
   type = map(object({
-    min_runners  = optional(number)
-    max_runners  = optional(number)
-    runner_group = optional(string)
+    min_runners   = optional(number)
+    max_runners   = optional(number)
+    runner_group  = optional(string)
+    containerMode = optional(string)
     requests = optional(object({
       cpu    = optional(string)
       memory = optional(string)

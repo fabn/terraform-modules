@@ -12,12 +12,12 @@ provider "helm" {
 
 variables {
   github_config_url = "https://github.com/acme"
+  github_token      = "gx_xxxxxxx"
 }
 
 run "controller_overrides" {
   command = plan
   variables {
-    github_token = "gx_xxxxxxx"
     controller_override_values = yamlencode({
       controller = {
         replicaCount = 2
@@ -37,7 +37,6 @@ run "controller_overrides" {
 run "multiple_runners" {
   command = plan
   variables {
-    github_token = "gx_xxxxxxx"
     runners = {
       foo = {}
       bar = {}
@@ -58,7 +57,6 @@ run "multiple_runners" {
 run "custom_pod_resources" {
   command = plan
   variables {
-    github_token = "gx_xxxxxxx"
     runners = {
       foo = {
         requests = {
@@ -86,7 +84,6 @@ run "custom_pod_resources" {
 run "pod_values" {
   command = plan
   variables {
-    github_token = "gx_xxxxxxx"
     runners = {
       foo = {
         values = yamlencode({
@@ -104,6 +101,22 @@ run "pod_values" {
     condition = alltrue([
       yamldecode(helm_release.runners["foo"].values[2]).template.spec.replicas == 2,
     ])
+    error_message = "Custom values not correctly configured"
+  }
+}
+
+run "container_mode" {
+  command = plan
+  variables {
+    runners = {
+      foo = {
+        containerMode = "dind"
+      }
+    }
+  }
+
+  assert {
+    condition     = output.set["foo"]["containerMode.kind"] == "dind"
     error_message = "Custom values not correctly configured"
   }
 }

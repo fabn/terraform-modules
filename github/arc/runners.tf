@@ -42,6 +42,14 @@ resource "helm_release" "runners" {
     }
   }
 
+  dynamic "set" {
+    for_each = each.value.containerMode != null ? [1] : []
+    content {
+      name  = "containerMode.kind"
+      value = each.value.containerMode
+    }
+  }
+
   # Mandatory to link the scale set to a given repo/organization
   set {
     name  = "githubConfigUrl"
@@ -85,4 +93,13 @@ output "yaml" {
     github_token : nonsensitive(var.github_token),
     github_config_secret : nonsensitive(var.github_config_secret),
   })
+}
+
+output "set" {
+  description = "The map of set values indexed by runner name"
+  value = {
+    for k, v in helm_release.runners : k => {
+      for s in v.set : s.name => s.value
+    }
+  }
 }
