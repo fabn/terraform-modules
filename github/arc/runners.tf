@@ -34,9 +34,12 @@ resource "helm_release" "runners" {
     value = each.key
   }
 
-  set {
-    name  = "runnerGroup"
-    value = coalesce(each.value.runner_group, var.runner_group, "default")
+  dynamic "set" {
+    for_each = each.value.runner_group != null ? [1] : []
+    content {
+      name  = "runnerGroup"
+      value = each.value.runner_group
+    }
   }
 
   # Mandatory to link the scale set to a given repo/organization

@@ -14,13 +14,6 @@ variable "scale_set_name_prefix" {
   nullable    = true
 }
 
-variable "runner_group" {
-  description = "A custom runner group to use for the scale sets"
-  type        = string
-  default     = null
-  nullable    = true
-}
-
 # See https://github.com/actions/actions-runner-controller/blob/master/charts/gha-runner-scale-set/values.yaml
 variable "github_token" {
   sensitive   = true
