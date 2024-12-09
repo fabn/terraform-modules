@@ -1,6 +1,6 @@
 provider "kubernetes" {
   config_path    = "~/.kube/config"
-  config_context = "live-cluster"
+  config_context = "kind-kind"
 }
 
 run "when_resource_exist" {
