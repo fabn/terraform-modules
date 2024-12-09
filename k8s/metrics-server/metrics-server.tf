@@ -22,7 +22,11 @@ resource "helm_release" "metrics_server" {
 
   # Not working as plain set, since it's an object
   values = [
-    yamlencode({ resources = var.resources }),
+    templatefile("${path.module}/metrics-server-limits.yml", {
+      cpu_requests    = var.resources.requests.cpu
+      memory_requests = var.resources.requests.memory
+      memory_limits   = var.resources.limits.memory
+    })
   ]
 
   set {
