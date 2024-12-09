@@ -20,3 +20,26 @@ variable "chart_version" {
   type        = string
   default     = null
 }
+
+variable "resources" {
+  description = "The resources to allocate to the metrics server"
+  type = object({
+    requests = optional(object({
+      memory = optional(string)
+      cpu    = optional(string)
+    })),
+    limits = optional(object({
+      memory = optional(string)
+      cpu    = optional(string)
+    }))
+  })
+  default = {
+    requests = {
+      memory = "100Mi"
+      cpu    = "10m"
+    }
+    limits = {
+      memory = "100Mi"
+    }
+  }
+}
