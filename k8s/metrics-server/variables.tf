@@ -40,7 +40,7 @@ variable "resources" {
     }
     limits = {
       memory = "100Mi"
-      cpu    = null
+      cpu    = "~"
     }
   }
 }
