@@ -61,7 +61,7 @@ jobs:
       # Optional module setup script to run before terraform
       - name: Test setup
         working-directory: ${{ matrix.module }}
-        if: hashFiles('setup.sh') != ''
+        if: hashFiles(format('{0}/setup.sh', matrix.module)) != ''
         run: ./setup.sh
 
       - name: Terraform Test
