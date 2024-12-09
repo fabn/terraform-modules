@@ -7,15 +7,12 @@ inputs:
   config:
     description: 'Path to the kind configuration file'
     default: '.github/kind-config.yml'
-  version:
-    description: 'Kind action version'
-    default: 'v1'
 
 runs:
   using: "composite"
   steps:
     - name: Setup Kubernetes
-      uses: helm/kind-action@${{ inputs.version }}
+      uses: helm/kind-action@v1
       with:
         cluster_name: ${{ inputs.cluster_name }}
         config: ${{ inputs.config }}
