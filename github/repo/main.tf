@@ -72,6 +72,12 @@ variable "teams" {
   default     = {}
 }
 
+variable "archived" {
+  description = "Whether the repository is archived"
+  type        = bool
+  default     = false
+}
+
 resource "github_repository" "repo" {
   name                        = var.name
   description                 = var.description
@@ -88,6 +94,8 @@ resource "github_repository" "repo" {
   squash_merge_commit_title   = "PR_TITLE"
   vulnerability_alerts        = var.has_dependabot
   auto_init                   = var.auto_init
+  archived                    = var.archived
+  archive_on_destroy          = true
   # Ensure repositories are never deleted via terraform
   lifecycle {
     prevent_destroy = true
