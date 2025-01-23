@@ -78,6 +78,12 @@ variable "archived" {
   default     = false
 }
 
+variable "archive_on_destroy" {
+  description = "Whether the repository should be archived on destroy"
+  type        = bool
+  default     = false
+}
+
 resource "github_repository" "repo" {
   name                        = var.name
   description                 = var.description
@@ -95,7 +101,7 @@ resource "github_repository" "repo" {
   vulnerability_alerts        = var.has_dependabot
   auto_init                   = var.auto_init
   archived                    = var.archived
-  archive_on_destroy          = true
+  archive_on_destroy          = var.archive_on_destroy
   # Ensure repositories are never deleted via terraform
   lifecycle {
     prevent_destroy = true
