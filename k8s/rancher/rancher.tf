@@ -33,8 +33,13 @@ resource "helm_release" "rancher" {
   }
 
   set {
-    name  = "ingress.tls.source"
-    value = "rancher" # disable letsencrypt
+    name  = "tls"
+    value = "external"
+  }
+
+	set {
+    name  = "replicas"
+    value = 1
   }
 }
 
