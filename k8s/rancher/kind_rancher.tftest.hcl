@@ -13,7 +13,6 @@ provider "helm" {
 run "install_helm_release" {
   variables {
     hostname      = "rancher.lvh.me"
-    chart_version = "2.8.4"
   }
 
   assert {
