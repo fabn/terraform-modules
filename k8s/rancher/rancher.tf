@@ -31,6 +31,11 @@ resource "helm_release" "rancher" {
     name  = "bootstrapPassword"
     value = local.bootstrap_password
   }
+
+  set {
+    name  = "ingress.tls.source"
+    value = "rancher" # disable letsencrypt
+  }
 }
 
 
