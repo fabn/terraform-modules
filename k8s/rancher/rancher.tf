@@ -48,6 +48,15 @@ resource "helm_release" "rancher" {
     name  = "replicas"
     value = var.replicas
   }
+
+  # Optionally sets a specific ingress class name
+  dynamic "set" {
+    for_each = var.ingress_class_name != null ? [1] : []
+    content {
+      name  = "ingress.ingressClassName"
+      value = var.ingress_class_name
+    }
+  }
 }
 
 

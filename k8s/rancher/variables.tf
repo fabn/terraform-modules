@@ -64,3 +64,10 @@ variable "replicas" {
   type        = number
   default     = 3
 }
+
+variable "ingress_class_name" {
+  description = "The name of the ingress class to use"
+  type        = string
+  default     = null
+  nullable    = true
+}
