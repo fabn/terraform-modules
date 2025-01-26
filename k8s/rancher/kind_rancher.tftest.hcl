@@ -50,7 +50,7 @@ run "nginx" {
   }
 
   module {
-    source = "../ingress-controller-nginx/kind_test"
+    source = "../ingress-controller-nginx"
   }
 }
 
