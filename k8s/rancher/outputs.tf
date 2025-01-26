@@ -16,11 +16,26 @@ output "chart_version" {
 
 output "bootstrap_password" {
   description = "The bootstrap password"
-  value       = local.bootstrap_password
+  value       = random_password.bootstrap.result
+  sensitive   = true
+}
+
+output "current_admin_password" {
+  description = "The current password for the admin user"
+  value       = local.admin_password
   sensitive   = true
 }
 
 output "server_url" {
   description = "The server url for rancher"
-  value       = "http://${var.hostname}"
+  value       = local.server_url
+}
+
+output "rancher_token" {
+  description = "The token to access the rancher API"
+  value = {
+    token    = rancher2_bootstrap.admin.token,
+    token_id = rancher2_bootstrap.admin.token_id
+  }
+  sensitive = true
 }

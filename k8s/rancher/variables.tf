@@ -46,8 +46,8 @@ variable "resources" {
   }
 }
 
-variable "bootstrap_password" {
-  description = "The password to use for the bootstrap admin user"
+variable "admin_password" {
+  description = "The password to use for the admin user"
   type        = string
   default     = null
   nullable    = true

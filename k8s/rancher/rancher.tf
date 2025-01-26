@@ -1,11 +1,15 @@
-# bootstrap password
+# bootstrap and admin password
+resource "random_password" "bootstrap" {
+  length = 16
+}
+
 resource "random_password" "admin" {
-  count  = var.bootstrap_password == null ? 1 : 0
-  length = 10
+  count  = var.admin_password == null ? 1 : 0
+  length = 15
 }
 
 locals {
-  bootstrap_password = var.bootstrap_password != null ? var.bootstrap_password : random_password.admin[0].result
+  admin_password = var.admin_password != null ? var.admin_password : random_password.admin[0].result
 
   has_tls = false
 
@@ -35,7 +39,7 @@ resource "helm_release" "rancher" {
 
   set {
     name  = "bootstrapPassword"
-    value = local.bootstrap_password
+    value = random_password.bootstrap.result
   }
 
   # Can be ingress or external, default is ingress but it requires cert manager to work
@@ -59,6 +63,17 @@ resource "helm_release" "rancher" {
   }
 }
 
+# Bootstrap the rancher installation
+resource "rancher2_bootstrap" "admin" {
+  # Used to bootstrap the rancher installation
+  initial_password = random_password.bootstrap.result
+  # Will be kept in sync for the admin user
+  password = local.admin_password
+  # Don't send telemetry data
+  telemetry = false
+  # By default generate a token that doesn't expire
+  token_ttl = 0
+}
 
 # # https://ranchermanager.docs.rancher.com/how-to-guides/advanced-user-guides/monitoring-alerting-guides/enable-monitoring#enabling-the-rancher-performance-dashboard
 # extraEnv:

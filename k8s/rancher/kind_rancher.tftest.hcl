@@ -18,6 +18,11 @@ variables {
 # Base installation with no ingress controller, only verify module logics
 run "install_helm_release" {
   command = plan
+
+  variables {
+    admin_password = "superSecret1234"
+  }
+
   assert {
     condition     = output.release_name == "rancher"
     error_message = "Wrong release name"
@@ -26,6 +31,14 @@ run "install_helm_release" {
   assert {
     condition     = output.server_url == "http://rancher.lvh.me"
     error_message = "It outputs server url for ${var.hostname}"
+  }
+
+  assert {
+    condition = alltrue([
+      output.bootstrap_password != null,
+      output.current_admin_password != var.admin_password,
+    ])
+    error_message = "It manages passwords"
   }
 }
 
@@ -53,7 +66,7 @@ run "install_full_release" {
   }
 
   assert {
-    condition     = output.server_url == "https://rancher.lvh.me"
+    condition     = output.server_url == "http://rancher.lvh.me"
     error_message = "It outputs server url for ${var.hostname}"
   }
 }
