@@ -79,7 +79,7 @@ run "connectivity_test" {
   }
 
   module {
-    source = "../../utils/http"
+    source = "../../misc/http"
   }
 
   assert {
