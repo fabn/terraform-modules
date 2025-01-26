@@ -57,3 +57,10 @@ variable "hostname" {
   description = "The hostname to configure for rancher"
   type        = string
 }
+
+
+variable "replicas" {
+  description = "The number of replicas to deploy"
+  type        = number
+  default     = 3
+}

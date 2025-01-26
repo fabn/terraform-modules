@@ -6,6 +6,11 @@ resource "random_password" "admin" {
 
 locals {
   bootstrap_password = var.bootstrap_password != null ? var.bootstrap_password : random_password.admin[0].result
+
+  has_tls = false
+
+  # Final server url
+  server_url = "${local.has_tls ? "https" : "http"}://${var.hostname}"
 }
 resource "kubernetes_namespace_v1" "ns" {
   count = var.create_namespace ? 1 : 0
@@ -21,6 +26,7 @@ resource "helm_release" "rancher" {
   namespace  = kubernetes_namespace_v1.ns[0].metadata.0.name
   repository = "https://releases.rancher.com/server-charts/stable"
   lint       = true # Useful to detect errors during plan
+  timeout    = 900  # First boot of rancher can take a while
 
   set {
     name  = "hostname"
@@ -32,14 +38,15 @@ resource "helm_release" "rancher" {
     value = local.bootstrap_password
   }
 
+  # Can be ingress or external, default is ingress but it requires cert manager to work
   set {
     name  = "tls"
-    value = "external"
+    value = local.has_tls ? "ingress" : "external"
   }
 
-	set {
+  set {
     name  = "replicas"
-    value = 1
+    value = var.replicas
   }
 }
 

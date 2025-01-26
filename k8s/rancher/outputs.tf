@@ -19,3 +19,8 @@ output "bootstrap_password" {
   value       = local.bootstrap_password
   sensitive   = true
 }
+
+output "server_url" {
+  description = "The server url for rancher"
+  value       = "http://${var.hostname}"
+}
