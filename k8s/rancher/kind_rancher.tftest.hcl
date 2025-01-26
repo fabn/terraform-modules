@@ -20,7 +20,8 @@ run "install_helm_release" {
   command = plan
 
   variables {
-    admin_password = "superSecret1234"
+    bootstrap_password = "superBootstrap1234"
+    admin_password     = "superSecret1234"
   }
 
   assert {
@@ -35,8 +36,8 @@ run "install_helm_release" {
 
   assert {
     condition = alltrue([
-      output.bootstrap_password != null,
-      output.current_admin_password != var.admin_password,
+      output.bootstrap_password == var.bootstrap_password,
+      output.admin_password == var.admin_password,
     ])
     error_message = "It manages passwords"
   }

@@ -20,7 +20,7 @@ output "bootstrap_password" {
   sensitive   = true
 }
 
-output "current_admin_password" {
+output "admin_password" {
   description = "The current password for the admin user"
   value       = local.admin_password
   sensitive   = true
