@@ -85,3 +85,9 @@ variable "extra_values" {
   nullable    = true
   default     = null
 }
+
+variable "self_signed" {
+  description = "Whether to use self signed certificates or not"
+  type        = bool
+  default     = false
+}

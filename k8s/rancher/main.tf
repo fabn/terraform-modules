@@ -19,4 +19,6 @@ terraform {
 provider "rancher2" {
   api_url   = local.server_url
   bootstrap = true
+  # Usually true only in tests
+  insecure = var.self_signed
 }

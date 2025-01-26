@@ -11,8 +11,9 @@ provider "helm" {
 }
 
 variables {
-  hostname = "rancher.lvh.me"
-  replicas = 1
+  hostname    = "rancher.fabn.dev"
+  replicas    = 1
+  self_signed = true
 }
 
 # Base installation with no ingress controller, only verify module logics
@@ -30,7 +31,7 @@ run "install_helm_release" {
   }
 
   assert {
-    condition     = output.server_url == "http://rancher.lvh.me"
+    condition     = output.server_url == "https://rancher.fabn.dev"
     error_message = "It outputs server url for ${var.hostname}"
   }
 
@@ -67,7 +68,7 @@ run "install_full_release" {
   }
 
   assert {
-    condition     = output.server_url == "http://rancher.lvh.me"
+    condition     = output.server_url == "https://rancher.fabn.dev"
     error_message = "It outputs server url for ${var.hostname}"
   }
 }
