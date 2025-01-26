@@ -75,7 +75,8 @@ run "install_full_release" {
 
 run "connectivity_test" {
   variables {
-    url = run.install_full_release.server_url
+    url             = run.install_full_release.server_url
+    skip_tls_verify = true
   }
 
   module {
