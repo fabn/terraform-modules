@@ -77,7 +77,10 @@ run "connectivity_test" {
   variables {
     url = run.install_full_release.server_url
   }
-  source = "../../utils/http"
+
+  module {
+    source = "../../utils/http"
+  }
 
   assert {
     condition     = output.status_code == 200
