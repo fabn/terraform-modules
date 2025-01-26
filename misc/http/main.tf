@@ -48,10 +48,24 @@ variable "retry_interval" {
   default     = 5
 }
 
+variable "request_headers" {
+  description = "Request headers"
+  type        = map(string)
+  default     = {}
+}
+
+variable "request_body" {
+  description = "Request body"
+  type        = string
+  default     = ""
+}
+
 data "http" "request" {
-  url      = var.url
-  method   = var.method
-  insecure = var.skip_tls_verify
+  url             = var.url
+  method          = var.method
+  request_headers = var.request_headers
+  request_body    = var.request_body
+  insecure        = var.skip_tls_verify
   retry {
     attempts     = var.max_retry
     min_delay_ms = var.retry_interval * 1000

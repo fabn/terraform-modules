@@ -73,10 +73,18 @@ run "install_full_release" {
   }
 }
 
-run "connectivity_test" {
+run "test_login" {
   variables {
-    url             = run.install_full_release.server_url
+    url             = "${run.install_full_release.server_url}/v3-public/localProviders/local"
+    method          = "POST"
     skip_tls_verify = true
+    request_headers = {
+      Content-Type = "application/json"
+    }
+    request_body = jsonencode({
+      username = "admin",
+      password = run.install_full_release.admin_password
+    })
   }
 
   module {
@@ -86,5 +94,13 @@ run "connectivity_test" {
   assert {
     condition     = output.status_code == 200
     error_message = "It responds with 200 at ${var.url}"
+  }
+
+  assert {
+    condition = alltrue([
+      length(jsondecode(output.response_body).token) > 0,
+      startswith(jsondecode(output.response_body).token, "Bearer")
+    ])
+    error_message = "It returns a valid token"
   }
 }
