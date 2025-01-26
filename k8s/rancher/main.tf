@@ -19,6 +19,8 @@ terraform {
 provider "rancher2" {
   api_url   = local.server_url
   bootstrap = true
+  # On creation it might take a while to be ready
+  timeout = "5m"
   # Usually true only in tests
   insecure = var.self_signed
 }

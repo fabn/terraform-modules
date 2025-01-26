@@ -72,3 +72,15 @@ run "install_full_release" {
     error_message = "It outputs server url for ${var.hostname}"
   }
 }
+
+run "connectivity_test" {
+  variables {
+    url = run.install_full_release.server_url
+  }
+  source = "../../utils/http"
+
+  assert {
+    condition     = output.status_code == 200
+    error_message = "It responds with 200 at ${var.url}"
+  }
+}
