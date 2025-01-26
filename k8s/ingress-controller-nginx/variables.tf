@@ -56,3 +56,10 @@ variable "chart_version" {
   type        = string
   default     = null
 }
+
+variable "extra_values" {
+  description = "Extra values to pass to the helm chart"
+  type        = map(any)
+  nullable    = true
+  default     = null
+}
