@@ -75,7 +75,7 @@ run "install_full_release" {
 
 run "test_login" {
   variables {
-    url             = "${run.install_full_release.server_url}/v3-public/localProviders/local"
+    url             = "${run.install_full_release.server_url}/v3-public/localProviders/local?action=login"
     method          = "POST"
     skip_tls_verify = true
     request_headers = {
@@ -99,7 +99,7 @@ run "test_login" {
   assert {
     condition = alltrue([
       length(jsondecode(output.response_body).token) > 0,
-      startswith(jsondecode(output.response_body).token, "Bearer")
+      startswith(jsondecode(output.response_body).token, "token")
     ])
     error_message = "It returns a valid token"
   }
