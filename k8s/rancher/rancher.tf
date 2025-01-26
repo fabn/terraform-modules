@@ -12,12 +12,8 @@ resource "random_password" "admin" {
 locals {
   bootstrap_password = var.bootstrap_password != null ? var.bootstrap_password : random_password.bootstrap[0].result
   admin_password     = var.admin_password != null ? var.admin_password : random_password.admin[0].result
-
-  has_tls = false
-
   # Final server url, always in https
   server_url = "https://${var.hostname}"
-
 
   # # https://ranchermanager.docs.rancher.com/how-to-guides/advanced-user-guides/monitoring-alerting-guides/enable-monitoring#enabling-the-rancher-performance-dashboard
   performance_dashboard = yamlencode({
