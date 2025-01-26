@@ -33,10 +33,11 @@ resource "kubernetes_namespace_v1" "ns" {
   }
   # Used mainly in test to allow the namespace to be destroyed
   provisioner "local-exec" {
-    when = destroy
-    # See https://stackoverflow.com/a/52820472/518204
+    # Use the rancher cleanup tool to remove all resources
+    # see https://github.com/rancher/rancher-cleanup
+    when    = destroy
     command = <<-EOT
-    kubectl patch ns ${self.metadata[0].name} -p '{"metadata":{"finalizers":null}}' --type=merge
+    kubectl apply -f https://raw.githubusercontent.com/rancher/rancher-cleanup/refs/heads/main/deploy/rancher-cleanup.yaml
     EOT
   }
 }
