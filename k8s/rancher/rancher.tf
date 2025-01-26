@@ -47,8 +47,10 @@ resource "helm_release" "rancher" {
   timeout    = 900  # First boot of rancher can take a while
 
   # List of YAML templates to merge
-  values = concat([
-    local.performance_dashboard
+  values = compact([
+    local.performance_dashboard,
+    # Additional extra values to pass to the chart
+    var.extra_values != null ? yamlencode(var.extra_values) : null,
   ])
 
   set {

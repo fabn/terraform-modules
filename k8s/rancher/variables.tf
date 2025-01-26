@@ -78,3 +78,10 @@ variable "ingress_class_name" {
   default     = null
   nullable    = true
 }
+
+variable "extra_values" {
+  description = "Extra values to pass to the helm chart"
+  type        = map(any)
+  nullable    = true
+  default     = null
+}
