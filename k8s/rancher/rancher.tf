@@ -17,6 +17,18 @@ locals {
 
   # Final server url
   server_url = "${local.has_tls ? "https" : "http"}://${var.hostname}"
+
+
+  # # https://ranchermanager.docs.rancher.com/how-to-guides/advanced-user-guides/monitoring-alerting-guides/enable-monitoring#enabling-the-rancher-performance-dashboard
+  performance_dashboard = yamlencode({
+    extraEnv = [
+      {
+        name  = "CATTLE_PROMETHEUS_METRICS"
+        value = "true"
+      }
+    ]
+  })
+
 }
 resource "kubernetes_namespace_v1" "ns" {
   count = var.create_namespace ? 1 : 0
@@ -33,6 +45,11 @@ resource "helm_release" "rancher" {
   repository = "https://releases.rancher.com/server-charts/stable"
   lint       = true # Useful to detect errors during plan
   timeout    = 900  # First boot of rancher can take a while
+
+  # List of YAML templates to merge
+  values = concat([
+    local.performance_dashboard
+  ])
 
   set {
     name  = "hostname"
@@ -77,10 +94,6 @@ resource "rancher2_bootstrap" "admin" {
   token_ttl = 0
 }
 
-# # https://ranchermanager.docs.rancher.com/how-to-guides/advanced-user-guides/monitoring-alerting-guides/enable-monitoring#enabling-the-rancher-performance-dashboard
-# extraEnv:
-#   - name: "CATTLE_PROMETHEUS_METRICS"
-#     value: "true"
 
 # Values to integrate:
 # ingress.tls.source
