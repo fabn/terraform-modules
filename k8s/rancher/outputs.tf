@@ -16,7 +16,7 @@ output "chart_version" {
 
 output "bootstrap_password" {
   description = "The bootstrap password"
-  value       = random_password.bootstrap.result
+  value       = local.bootstrap_password
   sensitive   = true
 }
 
