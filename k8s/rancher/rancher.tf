@@ -15,8 +15,8 @@ locals {
 
   has_tls = false
 
-  # Final server url
-  server_url = "${local.has_tls ? "https" : "http"}://${var.hostname}"
+  # Final server url, always in https
+  server_url = "https://${var.hostname}"
 
 
   # # https://ranchermanager.docs.rancher.com/how-to-guides/advanced-user-guides/monitoring-alerting-guides/enable-monitoring#enabling-the-rancher-performance-dashboard
@@ -63,10 +63,11 @@ resource "helm_release" "rancher" {
     value = local.bootstrap_password
   }
 
-  # Can be ingress or external, default is ingress but it requires cert manager to work
+  # Can be ingress or external, default is ingress but it requires cert
+  # manager to be installed, since it declare an Issuer
   set {
     name  = "tls"
-    value = local.has_tls ? "ingress" : "external"
+    value = var.self_signed ? "external" : "ingress"
   }
 
   set {
