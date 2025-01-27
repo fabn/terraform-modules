@@ -1,14 +1,9 @@
 provider "kubernetes" {
-  alias          = "kind"
   config_path    = "~/.kube/config"
   config_context = "kind-kind"
 }
 
 run "missing_default_ingress_class" {
-  providers = {
-    kubernetes = kubernetes.kind
-  }
-
   assert {
     condition     = output.exist == false
     error_message = "Wrong ingress class detection"
