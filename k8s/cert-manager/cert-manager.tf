@@ -43,7 +43,7 @@ resource "helm_release" "cert_manager" {
   # Need prometheus to be installed first
   set {
     name  = "prometheus.servicemonitor.enabled"
-    value = module.prometheus.has_crd
+    value = module.prometheus.has_crd && var.create_service_monitor
   }
 }
 

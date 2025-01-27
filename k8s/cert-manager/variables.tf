@@ -38,6 +38,7 @@ variable "release_name" {
 variable "chart_version" {
   description = "The version of the chart to deploy, used to install chart and relative CRDs"
   type        = string
+  default     = "1.16.3" # Current release at the time of writing
 }
 
 variable "do_token" {
@@ -45,4 +46,11 @@ variable "do_token" {
   type        = string
   sensitive   = true
   default     = null
+}
+
+# Checks also for prometheus to be installed, so true its a sane default and you can opt-out
+variable "create_service_monitor" {
+  description = "Whether to enable the service monitor for prometheus"
+  type        = bool
+  default     = true
 }
