@@ -15,6 +15,12 @@ output "chart_version" {
   value       = one(helm_release.cert_manager.metadata).version
 }
 
+output "values" {
+  description = "Rendered values through values attributes as object"
+  value       = yamldecode(join("\n", helm_release.cert_manager.values))
+  sensitive   = true
+}
+
 output "set" {
   description = "Set values through values attributes as object"
   value       = { for s in nonsensitive(helm_release.cert_manager.set) : s.name => s.value }

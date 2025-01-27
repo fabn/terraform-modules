@@ -29,6 +29,12 @@ resource "helm_release" "cert_manager" {
   atomic     = true
   lint       = true # Useful to detect errors during plan
 
+  # List of YAML templates to merge
+  values = compact([
+    # Additional extra values to pass to the chart
+    var.extra_values != null ? yamlencode(var.extra_values) : null,
+  ])
+
   # Added to make acme annotations working
   set {
     name  = "ingressShim.defaultIssuerName"
