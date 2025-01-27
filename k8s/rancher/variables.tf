@@ -91,3 +91,9 @@ variable "self_signed" {
   type        = bool
   default     = false
 }
+
+variable "disable_hooks" {
+  description = "Whether to disable hooks or not"
+  type        = bool
+  default     = false
+}

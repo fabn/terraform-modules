@@ -43,13 +43,16 @@ resource "kubernetes_namespace_v1" "ns" {
 }
 
 resource "helm_release" "rancher" {
-  name       = var.release_name
-  chart      = "rancher"
-  version    = var.chart_version
-  namespace  = kubernetes_namespace_v1.ns[0].metadata.0.name
-  repository = "https://releases.rancher.com/server-charts/stable"
-  lint       = true # Useful to detect errors during plan
-  timeout    = 900  # First boot of rancher can take a while
+  name              = var.release_name
+  chart             = "rancher"
+  version           = var.chart_version
+  namespace         = kubernetes_namespace_v1.ns[0].metadata.0.name
+  repository        = "https://releases.rancher.com/server-charts/stable"
+  lint              = true              # Useful to detect errors during plan
+  timeout           = 900               # First boot of rancher can take a while
+  disable_webhooks  = var.disable_hooks # Some hook fails in CI so disable them
+  disable_crd_hooks = var.disable_hooks # Some hook fails in CI so disable them
+
 
   # List of YAML templates to merge
   values = compact([
