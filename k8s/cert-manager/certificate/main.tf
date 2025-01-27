@@ -52,7 +52,6 @@ resource "kubectl_manifest" "certificate" {
     metadata = {
       name      = var.certificate_name
       namespace = var.namespace
-
     }
 
     spec = {
@@ -88,6 +87,12 @@ data "kubernetes_secret_v1" "tls" {
 output "certificate" {
   description = "The certificate object as certificate.cert-manager.io"
   value       = kubectl_manifest.certificate
+  sensitive   = true
+}
+
+output "spec" {
+  description = "The spec of the certificate extracted from the manifest"
+  value       = yamldecode(kubectl_manifest.certificate.yaml_body_parsed).spec
   sensitive   = true
 }
 

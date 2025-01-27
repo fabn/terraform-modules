@@ -48,17 +48,17 @@ run "create_wildcard_certificate" {
   }
 
   assert {
-    condition     = output.certificate.object.metadata.name == "star-dot-dev"
+    condition     = output.certificate.name == "star-dot-dev"
     error_message = "Wrong certificate name"
   }
 
   assert {
-    condition     = output.certificate.manifest.spec.issuerRef.name == run.helm_release.default_cluster_issuer
+    condition     = output.spec.issuerRef.name == run.helm_release.default_cluster_issuer
     error_message = "Wrong issuer used"
   }
 
   assert {
-    condition     = contains(output.certificate.manifest.spec.dnsNames, "*.test.fabn.dev")
+    condition     = contains(output.spec.dnsNames, "*.test.fabn.dev")
     error_message = "Wrong DNS name given"
   }
 

@@ -36,4 +36,14 @@ run "create_test" {
     condition     = output.secret.metadata[0].name == "star-dot-dev-tls"
     error_message = "Plan failed"
   }
+
+  assert {
+    condition = alltrue([
+      output.spec.issuerRef.name == var.issuer,
+      output.spec.dnsNames == var.dns_names,
+      output.certificate.name == var.certificate_name,
+      output.certificate.namespace == var.namespace
+    ])
+    error_message = "Certificate attributes mismatching"
+  }
 }
