@@ -39,8 +39,9 @@ run "create_test" {
 
   assert {
     condition = alltrue([
+      output.spec.issuerRef.kind == var.issuer_kind,
       output.spec.issuerRef.name == var.issuer,
-      output.spec.dnsNames == var.dns_names,
+      toset(output.spec.dnsNames) == toset(var.dns_names),
       output.certificate.name == var.certificate_name,
       output.certificate.namespace == var.namespace
     ])
