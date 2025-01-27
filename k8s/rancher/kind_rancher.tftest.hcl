@@ -11,10 +11,10 @@ provider "helm" {
 }
 
 variables {
-  hostname      = "rancher.fabn.dev"
-  replicas      = 1
-  self_signed   = true
-  disable_hooks = true
+  hostname    = "rancher.fabn.dev"
+  replicas    = 1
+  self_signed = true
+  # disable_hooks = true
 }
 
 # Base installation with no ingress controller, only verify module logics
