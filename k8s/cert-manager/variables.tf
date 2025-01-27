@@ -35,12 +35,6 @@ variable "release_name" {
   type    = string
 }
 
-variable "install_crd" {
-  description = "Whether to install the CRDs"
-  type        = bool
-  default     = true
-}
-
 variable "chart_version" {
   description = "The version of the chart to deploy, used to install chart and relative CRDs"
   type        = string

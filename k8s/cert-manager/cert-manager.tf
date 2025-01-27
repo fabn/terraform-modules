@@ -4,9 +4,14 @@ module "prometheus" {
 }
 
 resource "kubernetes_namespace_v1" "ns" {
+  count = var.create_namespace ? 1 : 0
   metadata {
     name = var.namespace
   }
+}
+
+locals {
+  namespace = var.create_namespace ? kubernetes_namespace_v1.ns[0].metadata[0].name : var.namespace
 }
 
 module "crd" {
@@ -19,11 +24,12 @@ resource "helm_release" "cert_manager" {
   name       = var.release_name
   chart      = "cert-manager"
   version    = var.chart_version
-  namespace  = kubernetes_namespace_v1.ns.metadata[0].name
+  namespace  = local.namespace
   repository = "https://charts.jetstack.io"
   atomic     = true
   lint       = true # Useful to detect errors during plan
 
+  # Added to make acme annotations working
   set {
     name  = "ingressShim.defaultIssuerName"
     value = var.default_cluster_issuer
