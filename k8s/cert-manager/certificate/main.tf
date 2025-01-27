@@ -74,6 +74,10 @@ resource "kubectl_manifest" "certificate" {
       }
     }
   }
+  timeouts {
+    # Sometimes DNS validation can take a while, raise default timeouts
+    create = "10m"
+  }
 }
 
 data "kubernetes_secret_v1" "tls" {
