@@ -11,7 +11,7 @@ resource "kubernetes_namespace_v1" "ns" {
 
 module "crd" {
   source = "../crd"
-  url    = "https://github.com/cert-manager/cert-manager/releases/download/${var.chart_version}/cert-manager.crds.yaml"
+  url    = "https://github.com/cert-manager/cert-manager/releases/download/v${var.chart_version}/cert-manager.crds.yaml"
 }
 
 resource "helm_release" "cert_manager" {
