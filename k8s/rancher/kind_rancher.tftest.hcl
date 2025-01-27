@@ -78,6 +78,7 @@ run "test_login" {
     url             = "${run.install_full_release.server_url}/v3-public/localProviders/local?action=login"
     method          = "POST"
     skip_tls_verify = true
+    status_codes    = [201]
     request_headers = {
       Content-Type = "application/json"
     }
