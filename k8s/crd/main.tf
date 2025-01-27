@@ -9,15 +9,6 @@ terraform {
   }
 }
 
-variable "url" {
-  description = "The url where to fetch the CRDs"
-  type        = string
-  validation {
-    condition     = can(regex("https?://.*", var.url))
-    error_message = "The url must be a valid http or https url"
-  }
-}
-
 data "http" "crds" {
   url = var.url
   lifecycle {
@@ -45,12 +36,8 @@ locals {
   crds = { for idx, doc in local.decoded_documents : doc.metadata.name => doc }
 }
 
-output "crds" {
-  description = "The CRDs fetched from url as name => CRD (as object)"
-  value       = local.crds
-}
-
-output "full_yaml" {
-  description = "The full CRD YAML content fetched from url"
-  value       = local.crds_yaml
+# Install them as kubernetes manifests
+resource "kubernetes_manifest" "crd" {
+  for_each = local.crds
+  manifest = each.value
 }

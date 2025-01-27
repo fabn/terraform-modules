@@ -4,6 +4,7 @@ provider "kubernetes" {
 }
 
 run "cert-manager" {
+  command = plan
   variables {
     url = "https://github.com/cert-manager/cert-manager/releases/latest/download/cert-manager.crds.yaml"
   }
@@ -24,5 +25,12 @@ run "cert-manager" {
       "challenges.acme.cert-manager.io"
     ])
     error_message = "CRDs returns the proper specs"
+  }
+
+  assert {
+    condition = alltrue([
+      for key in keys(output.crds) : (kubernetes_manifest.crd[key] != null)
+    ])
+    error_message = "It creates all manifests"
   }
 }
