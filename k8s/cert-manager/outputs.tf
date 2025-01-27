@@ -17,7 +17,7 @@ output "chart_version" {
 
 output "values" {
   description = "Rendered values through values attributes as object"
-  value       = yamldecode(join("\n", helm_release.cert_manager.values))
+  value       = length(helm_release.cert_manager.values) > 0 ? yamldecode(join("\n", helm_release.cert_manager.values)) : {}
   sensitive   = true
 }
 
