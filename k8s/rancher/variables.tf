@@ -97,3 +97,21 @@ variable "disable_hooks" {
   type        = bool
   default     = false
 }
+
+variable "letsencrypt" {
+  description = "Settings for letsencrypt"
+  type = object({
+    enabled     = optional(bool)
+    email       = string
+    environment = optional(string)
+  })
+  default = {
+    enabled     = false
+    email       = "" # Will fail if not set
+    environment = "production"
+  }
+  validation {
+    condition     = !var.letsencrypt.enabled || length(var.letsencrypt.email) > 0
+    error_message = "Email must be set when letsencrypt is enabled"
+  }
+}

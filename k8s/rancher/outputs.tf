@@ -40,3 +40,15 @@ output "rancher_token" {
   }
   sensitive = true
 }
+
+output "values" {
+  description = "Rendered values through values attributes as object"
+  value       = yamldecode(join("\n", helm_release.rancher.values))
+  sensitive   = true
+}
+
+output "set" {
+  description = "Set values through values attributes as object"
+  value       = { for s in nonsensitive(helm_release.rancher.set) : s.name => s.value if s.name != "globalConfig.signing_key" }
+  sensitive   = true
+}

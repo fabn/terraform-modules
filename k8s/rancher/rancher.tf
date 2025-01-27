@@ -42,6 +42,20 @@ resource "kubernetes_namespace_v1" "ns" {
   }
 }
 
+locals {
+
+  # If letsencrypt is enabled we need to pass some settings
+  tls_values = {
+    ingress = {
+      tls = { source = "letsEncrypt" }
+    }
+    letsEncrypt = {
+      email       = var.letsencrypt.email
+      environment = coalesce(var.letsencrypt.environment, "production")
+    }
+  }
+}
+
 resource "helm_release" "rancher" {
   name              = var.release_name
   chart             = "rancher"
@@ -57,6 +71,8 @@ resource "helm_release" "rancher" {
   # List of YAML templates to merge
   values = compact([
     local.performance_dashboard,
+    # Let's encrypt settings
+    var.letsencrypt.enabled ? yamlencode(local.tls_values) : null,
     # Additional extra values to pass to the chart
     var.extra_values != null ? yamlencode(var.extra_values) : null,
   ])
@@ -75,7 +91,7 @@ resource "helm_release" "rancher" {
   # manager to be installed, since it declare an Issuer
   set {
     name  = "tls"
-    value = var.self_signed ? "external" : "ingress"
+    value = !var.letsencrypt.enabled && var.self_signed ? "external" : "ingress"
   }
 
   set {
@@ -104,9 +120,3 @@ resource "rancher2_bootstrap" "admin" {
   # By default generate a token that doesn't expire
   token_ttl = 0
 }
-
-
-# Values to integrate:
-# ingress.tls.source
-# letsEncrypt.email
-# letsEncrypt.environment
