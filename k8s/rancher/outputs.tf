@@ -32,10 +32,11 @@ output "server_url" {
 }
 
 output "rancher_token" {
-  description = "The token to access the rancher API"
+  description = "The tokens to access the rancher API"
   value = {
-    token    = rancher2_bootstrap.admin.token,
-    token_id = rancher2_bootstrap.admin.token_id
+    api_token  = rancher2_bootstrap.admin.token,
+    access_key = rancher2_bootstrap.admin.token_id
+    secret_key = split(":", rancher2_bootstrap.admin.token)[1]
   }
   sensitive = true
 }
