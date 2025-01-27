@@ -39,7 +39,7 @@ run "create_test" {
 
   assert {
     condition = alltrue([
-      output.spec.issuerRef.kind == var.issuer_kind,
+      output.spec.issuerRef.kind == "ClusterIssuer", # Default value of var
       output.spec.issuerRef.name == var.issuer,
       toset(output.spec.dnsNames) == toset(var.dns_names),
       output.certificate.name == var.certificate_name,
@@ -47,4 +47,22 @@ run "create_test" {
     ])
     error_message = "Certificate attributes mismatching"
   }
+}
+
+run "issuer_test" {
+  variables {
+    issuer_kind = "Issuer"
+    namespace   = "default"
+    wait        = false
+  }
+
+  assert {
+    condition = alltrue([
+      output.spec.issuerRef.kind == "Issuer",
+      output.spec.issuerRef.name == var.issuer,
+      output.certificate.namespace == var.namespace
+    ])
+    error_message = "Certificate attributes mismatching"
+  }
+
 }
