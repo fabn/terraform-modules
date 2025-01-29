@@ -47,6 +47,12 @@ variable "auto_scale" {
   })
 }
 
+variable "default_node_pool_name" {
+  description = "The name of the default node pool"
+  default     = "default"
+  type        = string
+}
+
 # Fetch last kubernetes version available in the region
 data "digitalocean_kubernetes_versions" "available" {}
 
@@ -100,7 +106,7 @@ resource "digitalocean_kubernetes_cluster" "cluster" {
   }
 
   node_pool {
-    name       = "default"
+    name       = var.default_node_pool_name
     size       = coalesce(var.node_size, element(data.digitalocean_sizes.cheapest.sizes, 0).slug)
     node_count = var.node_count
     auto_scale = var.auto_scale.enabled
