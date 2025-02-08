@@ -27,7 +27,9 @@ resource "helm_release" "ingress_nginx" {
       load_balancer_hostname = var.load_balancer_hostname
       default                = var.default_ingress
       ingress_class_name     = local.ingress_class_name
-    }) : null)
+    }) : null),
+    # Additional extra values to pass to the chart
+    var.extra_values != null ? yamlencode(var.extra_values) : null,
   ])
 
 

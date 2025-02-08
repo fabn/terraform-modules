@@ -7,6 +7,9 @@ inputs:
   config:
     description: 'Path to the kind configuration file'
     default: '.github/kind-config.yml'
+  version:
+    description: 'Version of the Kubernetes cluster'
+    default: '1.31.0'
 
 runs:
   using: "composite"
@@ -16,3 +19,4 @@ runs:
       with:
         cluster_name: ${{ inputs.cluster_name }}
         config: ${{ inputs.config }}
+        node_image: "kindest/node:v${{ inputs.version }}"

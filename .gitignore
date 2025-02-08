@@ -35,3 +35,6 @@ terraform.rc
 
 # In modules we don't want to have the lock file to allow testing with latest versions
 .terraform.lock.hcl
+
+# Test folder
+/test

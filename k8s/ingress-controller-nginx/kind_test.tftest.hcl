@@ -57,7 +57,7 @@ run "curl" {
   }
 
   module {
-    source = "../http-deployment/curl"
+    source = "../../misc/http"
   }
 
   assert {
@@ -79,7 +79,7 @@ run "curl_404_page" {
   }
 
   module {
-    source = "../http-deployment/curl"
+    source = "../../misc/http"
   }
 
   assert {
