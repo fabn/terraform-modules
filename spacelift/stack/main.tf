@@ -12,6 +12,7 @@ data "spacelift_space" "root" {
 
 resource "spacelift_stack" "stack" {
   name                            = var.name
+  description                     = var.description
   space_id                        = data.spacelift_space.root.id
   repository                      = var.repository
   branch                          = var.branch

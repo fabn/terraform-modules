@@ -4,12 +4,17 @@ mock_provider "spacelift" {}
 variables {
   name         = "Test"
   project_root = "/"
+  description  = "Test stack"
 }
 
 run "simple" {
   assert {
     condition     = spacelift_stack.stack.name == "Test"
     error_message = "The stack was not created"
+  }
+  assert {
+    condition     = spacelift_stack.stack.description == "Test stack"
+    error_message = "The stack description was not created"
   }
   assert {
     condition     = output.stack_id == spacelift_stack.stack.id

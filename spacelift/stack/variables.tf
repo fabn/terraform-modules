@@ -3,6 +3,12 @@ variable "name" {
   type        = string
 }
 
+variable "description" {
+  description = "Stack description"
+  type        = string
+  default     = null
+}
+
 variable "space_id" {
   description = "Space where to create the context"
   type        = string
