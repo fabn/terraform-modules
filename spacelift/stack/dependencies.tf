@@ -1,5 +1,5 @@
 locals {
-  stack_dependencies = [for k, v in var.dependencies : nonsensitive(k)]
+  stack_dependencies = [for k, v in var.dependencies : k]
 
   # Create a set of keys for each dependency and stack
   dependencies_map = flatten([
@@ -21,7 +21,7 @@ locals {
 
 # Stack dependencies, if any
 resource "spacelift_stack_dependency" "edges" {
-  for_each            = nonsensitive(var.dependencies)
+  for_each            = var.dependencies
   stack_id            = spacelift_stack.stack.id
   depends_on_stack_id = each.key
 }
