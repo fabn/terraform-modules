@@ -84,11 +84,17 @@ variable "archive_on_destroy" {
   default     = false
 }
 
+variable "visibility" {
+  description = "The visibility of the repository"
+  default     = "private"
+  type        = string
+}
+
 resource "github_repository" "repo" {
   name                        = var.name
   description                 = var.description
   homepage_url                = var.homepage_url
-  visibility                  = "private"
+  visibility                  = var.visibility
   allow_merge_commit          = false
   allow_rebase_merge          = false
   allow_update_branch         = true
