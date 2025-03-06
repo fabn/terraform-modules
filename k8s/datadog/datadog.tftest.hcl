@@ -32,8 +32,21 @@ run "logs_and_discovery" {
 
   assert {
     condition = alltrue([
-      yamlencode(kubectl_manifest.agent.yaml_body).spec.features.logCollection.enabled == var.logging_enabled,
+      yamldecode(kubectl_manifest.agent.yaml_body_parsed).spec.features.logCollection.enabled == var.logging_enabled,
+      yamldecode(kubectl_manifest.agent.yaml_body_parsed).spec.features.logCollection.containerCollectAll == var.collect_all_logging,
     ])
     error_message = "Agent manifest was not properly generated"
+  }
+
+  assert {
+    condition = alltrue([
+      local.included_namespaces == ["kube_namespace:default", "kube_namespace:kube-system"],
+      local.excluded_namespaces == [],
+      local.agent_env == [
+        { name = "DD_CONTAINER_EXCLUDE", value = "" },
+        { name = "DD_CONTAINER_INCLUDE", value = "kube_namespace:default kube_namespace:kube-system" },
+      ],
+    ])
+    error_message = "Exclude list is properly generated"
   }
 }

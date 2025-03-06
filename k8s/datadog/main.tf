@@ -79,7 +79,7 @@ resource "kubectl_manifest" "agent" {
       # Discovery options
       override = {
         nodeAgent = {
-          env : local.agent_env
+          env = local.agent_env
         }
       }
     }
