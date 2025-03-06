@@ -3,6 +3,12 @@ variable "namespace" {
   type    = string
 }
 
+variable "create_namespace" {
+  description = "Whether to create the namespace or not"
+  type        = bool
+  default     = true
+}
+
 variable "release_name" {
   default = "metrics-server"
   type    = string

@@ -1,4 +1,9 @@
-data "kubernetes_namespace_v1" "ns" {
+locals {
+  namespace = var.create_namespace ? kubernetes_namespace_v1.ns[0].metadata[0].name : var.namespace
+}
+
+resource "kubernetes_namespace_v1" "ns" {
+  count = var.create_namespace ? 1 : 0
   metadata {
     name = var.namespace
   }
@@ -6,14 +11,13 @@ data "kubernetes_namespace_v1" "ns" {
 
 # Input variable passed to module
 resource "helm_release" "metrics_server" {
-  name             = var.release_name
-  chart            = "metrics-server"
-  version          = var.chart_version
-  namespace        = var.namespace
-  repository       = "https://kubernetes-sigs.github.io/metrics-server/"
-  create_namespace = data.kubernetes_namespace_v1.ns.spec == null
-  atomic           = true
-  lint             = true # Useful to detect errors during plan
+  name       = var.release_name
+  chart      = "metrics-server"
+  version    = var.chart_version
+  namespace  = local.namespace
+  repository = "https://kubernetes-sigs.github.io/metrics-server/"
+  atomic     = true
+  lint       = true # Useful to detect errors during plan
 
   # Not working as plain set, since it's an object
   values = [
