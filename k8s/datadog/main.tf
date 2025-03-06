@@ -51,6 +51,7 @@ locals {
 }
 
 resource "kubectl_manifest" "agent" {
+  depends_on = [helm_release.datadog_operator]
   yaml_body = yamlencode({
     apiVersion = "datadoghq.com/v2alpha1",
     kind       = "DatadogAgent",
