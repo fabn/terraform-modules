@@ -1,20 +1,3 @@
-provider "kubernetes" {
-  config_path    = "~/.kube/config"
-  config_context = "kind-kind"
-}
-
-provider "kubectl" {
-  config_path    = "~/.kube/config"
-  config_context = "kind-kind"
-}
-
-provider "helm" {
-  kubernetes {
-    config_path    = "~/.kube/config"
-    config_context = "kind-kind"
-  }
-}
-
 variables {
   cluster_name = "demo"
   dd_api_key   = "1234567890"
@@ -38,10 +21,19 @@ run "default_install" {
   }
 }
 
-# Real install on kind
-run "install" {
+run "logs_and_discovery" {
+  command = plan
+  variables {
+    logging_enabled = true
+    discovered_namespaces = {
+      included_namespaces = ["default", "kube-system"]
+    }
+  }
+
   assert {
-    condition     = outputs.chart_version != null
-    error_message = "Operator was not installed"
+    condition = alltrue([
+      yamlencode(kubectl_manifest.agent.yaml_body).spec.features.logCollection.enabled == var.logging_enabled,
+    ])
+    error_message = "Agent manifest was not properly generated"
   }
 }

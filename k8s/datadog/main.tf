@@ -39,6 +39,17 @@ resource "helm_release" "datadog_operator" {
   atomic     = true
 }
 
+locals {
+  excluded_namespaces = [for ns in coalesce(var.discovered_namespaces.excluded_namespaces, []) : "kube_namespace:${ns}"]
+  included_namespaces = [for ns in coalesce(var.discovered_namespaces.included_namespaces, []) : "kube_namespace:${ns}"]
+
+  # see https://docs.datadoghq.com/containers/guide/container-discovery-management/?tab=datadogoperator#environment-variables
+  agent_env = [
+    { name = "DD_CONTAINER_EXCLUDE", value = join(" ", local.excluded_namespaces) },
+    { name = "DD_CONTAINER_INCLUDE", value = join(" ", local.included_namespaces) },
+  ]
+}
+
 resource "kubectl_manifest" "agent" {
   yaml_body = yamlencode({
     apiVersion = "datadoghq.com/v2alpha1",
@@ -56,6 +67,19 @@ resource "kubectl_manifest" "agent" {
             secretName = kubernetes_secret.api_key.metadata.0.name,
             keyName    = "api_key"
           }
+        }
+      }
+      # Opt in flags for features
+      features = {
+        logCollection = {
+          enabled             = var.logging_enabled
+          containerCollectAll = var.collect_all_logging
+        }
+      }
+      # Discovery options
+      override = {
+        nodeAgent = {
+          env : local.agent_env
         }
       }
     }
