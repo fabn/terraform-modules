@@ -1,8 +1,3 @@
-module "prometheus" {
-  source = "../has-crd"
-  name   = "servicemonitors.monitoring.coreos.com"
-}
-
 data "kubernetes_namespace_v1" "ns" {
   metadata {
     name = var.namespace
@@ -31,13 +26,13 @@ resource "helm_release" "metrics_server" {
 
   set {
     name  = "metrics.enabled"
-    value = module.prometheus.has_crd
+    value = var.metrics_enabled
   }
 
   # Need prometheus to be installed first
   set {
     name  = "serviceMonitor.enabled"
-    value = module.prometheus.has_crd
+    value = var.service_monitor_enabled
   }
 
   # When running in kind this is needed to avoid TLS errors

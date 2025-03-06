@@ -21,6 +21,18 @@ variable "chart_version" {
   default     = null
 }
 
+variable "metrics_enabled" {
+  description = "Enable metrics collection"
+  type        = bool
+  default     = true
+}
+
+variable "service_monitor_enabled" {
+  description = "Enable service monitor"
+  type        = bool
+  default     = false
+}
+
 variable "resources" {
   description = "The resources to allocate to the metrics server"
   type = object({
