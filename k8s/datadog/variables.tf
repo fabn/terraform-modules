@@ -26,7 +26,6 @@ variable "dd_site" {
   description = "The Datadog site to use"
   type        = string
   # Check https://docs.datadoghq.com/getting_started/site/
-  default = "datadoghq.com" # US1
   validation {
     condition = contains([
       "datadoghq.com",
