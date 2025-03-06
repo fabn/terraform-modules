@@ -9,6 +9,13 @@ variable "namespace" {
   default     = "datadog"
 }
 
+variable "chart_version" {
+  description = "The version of the chart to deploy, if null latest is used"
+  type        = string
+  default     = null
+  nullable    = true
+}
+
 variable "dd_api_key" {
   description = "The Datadog API key"
   type        = string
