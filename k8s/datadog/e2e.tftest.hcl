@@ -25,7 +25,7 @@ variables {
 # Real install on kind
 run "install" {
   assert {
-    condition     = outputs.chart_version != null
+    condition     = output.chart_version != null
     error_message = "Operator was not installed"
   }
 }
