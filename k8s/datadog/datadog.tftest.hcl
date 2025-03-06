@@ -1,3 +1,20 @@
+provider "kubernetes" {
+  config_path    = "~/.kube/config"
+  config_context = "kind-kind"
+}
+
+provider "kubectl" {
+  config_path    = "~/.kube/config"
+  config_context = "kind-kind"
+}
+
+provider "helm" {
+  kubernetes {
+    config_path    = "~/.kube/config"
+    config_context = "kind-kind"
+  }
+}
+
 variables {
   cluster_name = "demo"
   dd_api_key   = "1234567890"
@@ -18,5 +35,13 @@ run "default_install" {
       kubernetes_secret.api_key.metadata[0].namespace == var.namespace
     ])
     error_message = "The secret was not created"
+  }
+}
+
+# Real install on kind
+run "install" {
+  assert {
+    condition     = outputs.chart_version != null
+    error_message = "Operator was not installed"
   }
 }
