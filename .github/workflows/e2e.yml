@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Get all changed terraform files
         id: changed-modules
-        uses: tj-actions/changed-files@v45
+        uses: tj-actions/changed-files@v46
         # Used as input for matrix
         with:
           matrix: true
