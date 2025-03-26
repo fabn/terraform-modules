@@ -8,10 +8,10 @@ resource "kubernetes_namespace_v1" "namespace" {
 locals {
   ingress_class_name = var.default_ingress ? "nginx" : "nginx-${var.release_name}"
 
-  # This is a sane default, make them parametric when needed
   # Computed values
-  resources = {
-    "controller.resources" = {
+  values = {
+    controller = {
+      # This is a sane default, make them parametric when needed
       limits = {
         memory = "384Mi"
       }
@@ -19,26 +19,22 @@ locals {
         cpu    = "50m"
         memory = "128Mi"
       }
-    }
-  }
-
-  metrics = {
-    "controller.metrics" = {
-      enabled = var.enable_metrics
-      serviceMonitor = {
+      # Metrics configuration according to inputs
+      metrics = {
         enabled = var.enable_metrics
+        serviceMonitor = {
+          enabled = var.enable_metrics
+        }
       }
-    }
-  }
-
-  autoscaling = {
-    "controller.autoscaling" = {
-      enabled     = var.enable_metrics
-      minReplicas = 1
-      maxReplicas = 5
-      targetCPUUtilizationPercentage : 600
-      targetMemoryUtilizationPercentage : 80
-      # TODO: configure custom metric after integrating with prometheus
+      # Autoscaling configuration for controller
+      autoscaling = {
+        enabled     = var.enable_metrics
+        minReplicas = 1
+        maxReplicas = 5
+        targetCPUUtilizationPercentage : 600
+        targetMemoryUtilizationPercentage : 80
+        # TODO: configure custom metric after integrating with prometheus
+      }
     }
   }
 }
@@ -63,9 +59,7 @@ resource "helm_release" "ingress_nginx" {
       ingress_class_name     = local.ingress_class_name
     }) : null),
     # Additional values from the module
-    yamlencode(local.resources),
-    yamlencode(local.metrics),
-    yamlencode(local.autoscaling),
+    yamlencode(local.values),
     # Additional extra values to pass to the chart
     var.extra_values != null ? yamlencode(var.extra_values) : null,
   ])
