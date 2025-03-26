@@ -1,5 +1,3 @@
-mock_provider "github" {}
-
 variables {
   name         = "some-repo"
   description  = "Repository description"
@@ -11,6 +9,11 @@ run "create_repo" {
   assert {
     condition     = output.repository.name == "some-repo"
     error_message = "The repo was not created"
+  }
+
+  assert {
+    condition     = github_branch_default.default[0].branch == var.default_branch
+    error_message = "Default branch was not set"
   }
 }
 
