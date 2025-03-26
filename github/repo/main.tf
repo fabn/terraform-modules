@@ -102,14 +102,20 @@ variable "visibility" {
   type        = string
 }
 
+variable "allow_auto_merge" {
+  description = "Whether to allow auto merge"
+  type        = bool
+  default     = true
+}
+
 resource "github_repository" "repo" {
   name                        = var.name
   description                 = var.description
   homepage_url                = var.homepage_url
   visibility                  = var.visibility
+  allow_auto_merge            = var.allow_auto_merge
   allow_merge_commit          = false
   allow_rebase_merge          = false
-  allow_auto_merge            = true
   allow_update_branch         = true
   delete_branch_on_merge      = true
   has_downloads               = false
