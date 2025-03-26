@@ -17,6 +17,12 @@ variable "description" {
   default     = null
 }
 
+variable "default_branch" {
+  description = "The default branch name"
+  type        = string
+  default     = "main"
+}
+
 variable "homepage_url" {
   description = "The homepage of the repository"
   type        = string
@@ -42,6 +48,12 @@ variable "has_dependabot" {
 }
 
 variable "secrets" {
+  type      = map(string)
+  default   = {}
+  sensitive = true
+}
+
+variable "dependabot_secrets" {
   type      = map(string)
   default   = {}
   sensitive = true
@@ -90,11 +102,18 @@ variable "visibility" {
   type        = string
 }
 
+variable "allow_auto_merge" {
+  description = "Whether to allow auto merge"
+  type        = bool
+  default     = true
+}
+
 resource "github_repository" "repo" {
   name                        = var.name
   description                 = var.description
   homepage_url                = var.homepage_url
   visibility                  = var.visibility
+  allow_auto_merge            = var.allow_auto_merge
   allow_merge_commit          = false
   allow_rebase_merge          = false
   allow_update_branch         = true
@@ -114,6 +133,19 @@ resource "github_repository" "repo" {
   }
 }
 
+data "github_branch" "default" {
+  count      = var.default_branch != null ? 1 : 0
+  repository = github_repository.repo.name
+  branch     = var.default_branch
+}
+
+resource "github_branch_default" "default" {
+  count      = var.default_branch != null ? 1 : 0
+  repository = github_repository.repo.name
+  branch     = data.github_branch.default[0].branch
+}
+
+
 # Configure a secret for each passed value
 resource "github_actions_secret" "secrets" {
   for_each        = nonsensitive(var.secrets)
@@ -121,6 +153,15 @@ resource "github_actions_secret" "secrets" {
   secret_name     = each.key
   plaintext_value = each.value
 }
+
+# Secrets for repository
+resource "github_dependabot_secret" "secrets" {
+  for_each        = nonsensitive(var.dependabot_secrets)
+  repository      = github_repository.repo.name
+  secret_name     = each.key
+  plaintext_value = each.value
+}
+
 
 # Configure a variable for each passed value (non sensitive)
 resource "github_actions_variable" "variables" {
