@@ -47,6 +47,12 @@ variable "secrets" {
   sensitive = true
 }
 
+variable "dependabot_secrets" {
+  type      = map(string)
+  default   = {}
+  sensitive = true
+}
+
 variable "variables" {
   description = "A map of variables to configure in the repository (global secrets)"
   type        = map(string)
@@ -97,6 +103,7 @@ resource "github_repository" "repo" {
   visibility                  = var.visibility
   allow_merge_commit          = false
   allow_rebase_merge          = false
+  allow_auto_merge            = true
   allow_update_branch         = true
   delete_branch_on_merge      = true
   has_downloads               = false
@@ -121,6 +128,15 @@ resource "github_actions_secret" "secrets" {
   secret_name     = each.key
   plaintext_value = each.value
 }
+
+# Secrets for repository
+resource "github_dependabot_secret" "ci_secrets" {
+  for_each        = nonsensitive(var.dependabot_secrets)
+  repository      = github_repository.repo.name
+  secret_name     = each.key
+  plaintext_value = each.value
+}
+
 
 # Configure a variable for each passed value (non sensitive)
 resource "github_actions_variable" "variables" {
