@@ -149,7 +149,7 @@ resource "github_actions_secret" "secrets" {
 }
 
 # Secrets for repository
-resource "github_dependabot_secret" "ci_secrets" {
+resource "github_dependabot_secret" "secrets" {
   for_each        = nonsensitive(var.dependabot_secrets)
   repository      = github_repository.repo.name
   secret_name     = each.key

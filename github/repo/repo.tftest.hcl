@@ -7,6 +7,7 @@ variables {
 }
 
 run "create_repo" {
+  command = plan
   assert {
     condition     = output.repository.name == "some-repo"
     error_message = "The repo was not created"
@@ -14,9 +15,13 @@ run "create_repo" {
 }
 
 run "create_repo_with_secrets" {
+  command = plan
   variables {
     secrets = {
       FOO = "bar"
+    }
+    dependabot_secrets = {
+      FOO = "baz"
     }
   }
 
@@ -24,9 +29,14 @@ run "create_repo_with_secrets" {
     condition     = github_actions_secret.secrets["FOO"].plaintext_value == "bar"
     error_message = "The secret was not created"
   }
+  assert {
+    condition     = github_dependabot_secret.secrets["FOO"].plaintext_value == "baz"
+    error_message = "The secret was not created"
+  }
 }
 
 run "create_repo_with_workflow_access" {
+  command = plan
   variables {
     shared_workflows = true
   }
@@ -38,6 +48,7 @@ run "create_repo_with_workflow_access" {
 }
 
 run "create_repo_with_team_access" {
+  command = plan
   variables {
     teams = {
       "some-team" = "admin"
@@ -51,6 +62,7 @@ run "create_repo_with_team_access" {
 }
 
 run "create_repo_with_variables" {
+  command = plan
   variables {
     variables = {
       FOO = "bar"
