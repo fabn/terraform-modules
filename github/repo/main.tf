@@ -17,6 +17,12 @@ variable "description" {
   default     = null
 }
 
+variable "default_branch" {
+  description = "The default branch name"
+  type        = string
+  default     = "main"
+}
+
 variable "homepage_url" {
   description = "The homepage of the repository"
   type        = string
@@ -120,6 +126,19 @@ resource "github_repository" "repo" {
     prevent_destroy = true
   }
 }
+
+data "github_branch" "default" {
+  count      = var.default_branch != null ? 1 : 0
+  repository = github_repository.repo.name
+  branch     = var.default_branch
+}
+
+resource "github_branch_default" "default" {
+  count      = var.default_branch != null ? 1 : 0
+  repository = github_repository.repo.name
+  branch     = data.github_branch.default[0].branch
+}
+
 
 # Configure a secret for each passed value
 resource "github_actions_secret" "secrets" {
