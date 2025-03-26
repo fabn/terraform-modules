@@ -1,3 +1,5 @@
+mock_provider "github" {}
+
 variables {
   name         = "some-repo"
   description  = "Repository description"
