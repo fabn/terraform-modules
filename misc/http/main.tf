@@ -72,8 +72,8 @@ data "http" "request" {
   }
   lifecycle {
     postcondition {
-      condition     = contains(var.status_codes, self.status_code)
-      error_message = "Status code invalid while accessing ${var.method} ${var.url}"
+      condition     = contains(var.status_codes, tonumber(self.status_code))
+      error_message = "Status code invalid while accessing ${var.method} ${var.url}: Code ${self.status_code}"
     }
   }
 }
@@ -100,6 +100,6 @@ output "headers" {
 }
 
 output "parsed" {
-  description = "Request response body as object"
-  value       = try(jsondecode(data.http.request.response_body))
+  description = "Request response body as object (JSON only)"
+  value       = strcontains(data.http.request.response_headers["Content-Type"], "json") ? jsondecode(data.http.request.response_body) : {}
 }

@@ -16,10 +16,8 @@ run "ingress_controller" {
   }
 
   variables {
-    kind               = true
-    custom_error_pages = true
+    kind = true
   }
-
 }
 
 run "http_ingress" {
