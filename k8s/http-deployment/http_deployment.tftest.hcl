@@ -68,9 +68,11 @@ run "curl_to_ingress" {
     error_message = "Echo deployment not working as expected"
   }
 
-  # Query the echo service to check if it is working as expected returning the hostname in JSON response
   assert {
-    condition     = lookup(output.parsed, "headers")["X-Test"] == "test"
+    condition = alltrue([
+      contains(keys(output.parsed.headers), "X-Test"),
+      lookup(output.parsed.headers, "X-Test") == "test"
+    ])
     error_message = "Configured snippet not applied"
   }
 }
