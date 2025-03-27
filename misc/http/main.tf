@@ -94,6 +94,11 @@ output "response_body" {
   value       = data.http.request.response_body
 }
 
+output "headers" {
+  description = "Response headers"
+  value       = data.http.request.response_headers
+}
+
 output "parsed" {
   description = "Request response body as object"
   value       = try(jsondecode(data.http.request.response_body))

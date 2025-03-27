@@ -64,15 +64,12 @@ run "curl_to_ingress" {
 
   # Query the echo service to check if it is working as expected returning the hostname in JSON response
   assert {
-    condition     = lookup(output.parsed, "host").hostname == run.http_ingress.host
+    condition     = output.parsed.host.hostname == run.http_ingress.host
     error_message = "Echo deployment not working as expected"
   }
 
   assert {
-    condition = alltrue([
-      contains(keys(output.parsed.headers), "X-Test"),
-      lookup(output.parsed.headers, "X-Test") == "test"
-    ])
+    condition     = output.headers["X-Test"] == "test"
     error_message = "Configured snippet not applied"
   }
 }
