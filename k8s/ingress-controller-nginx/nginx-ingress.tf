@@ -5,10 +5,6 @@ resource "kubernetes_namespace_v1" "namespace" {
   }
 }
 
-output "debug" {
-  value = local.resources_config
-}
-
 locals {
   ingress_class_name = var.default_ingress ? "nginx" : "nginx-${var.release_name}"
 
