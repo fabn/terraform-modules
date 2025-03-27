@@ -5,8 +5,17 @@ resource "kubernetes_namespace_v1" "namespace" {
   }
 }
 
+output "debug" {
+  value = local.resources_config
+}
+
 locals {
   ingress_class_name = var.default_ingress ? "nginx" : "nginx-${var.release_name}"
+
+  resources_config = templatefile("${path.module}/resources.yml", {
+    requests : var.resources.requests
+    limits : var.resources.limits
+  })
 
   autoscaling = {
     enabled                           = (coalesce(var.autoscale.enabled, true) && var.enable_metrics)
@@ -19,7 +28,6 @@ locals {
   # Computed values
   values = {
     controller = {
-      resources = var.resources
       # Metrics configuration according to inputs
       metrics = {
         enabled = var.enable_metrics
@@ -52,6 +60,7 @@ resource "helm_release" "ingress_nginx" {
       default                = var.default_ingress
       ingress_class_name     = local.ingress_class_name
     }) : null),
+    local.resources_config,
     # Additional values from the module
     yamlencode(local.values),
     # Additional extra values to pass to the chart
