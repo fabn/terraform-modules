@@ -19,6 +19,12 @@ run "parsed" {
   }
 }
 
+run "with_complex_json" {
+  variables {
+    url = "https://jsonplaceholder.typicode.com/todos" # Returns a list of objects
+  }
+}
+
 run "not_found" {
   variables {
     url          = "https://example.com/not-found"

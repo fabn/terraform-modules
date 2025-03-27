@@ -101,5 +101,5 @@ output "headers" {
 
 output "parsed" {
   description = "Request response body as object (JSON only)"
-  value       = strcontains(data.http.request.response_headers["Content-Type"], "json") ? jsondecode(data.http.request.response_body) : {}
+  value       = try(jsondecode(data.http.request.response_body), {})
 }
