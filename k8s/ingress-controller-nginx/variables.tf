@@ -63,3 +63,44 @@ variable "extra_values" {
   nullable    = true
   default     = null
 }
+
+variable "resources" {
+  description = "The resources to allocate to the nginx deployment"
+  type = object({
+    requests = optional(object({
+      memory = optional(string)
+      cpu    = optional(string)
+    })),
+    limits = optional(object({
+      memory = optional(string)
+      cpu    = optional(string)
+    }))
+  })
+  default = {
+    requests = {
+      memory = "384Mi"
+      cpu    = "50m"
+    }
+    limits = {
+      memory = "384Mi"
+    }
+  }
+}
+
+variable "autoscale" {
+  description = "Whether to enable autoscaling for the nginx controller"
+  type = object({
+    enabled                        = optional(bool),
+    minReplicas                    = optional(number),
+    maxReplicas                    = optional(number),
+    targetCPUUtilizationPercentage = optional(number),
+    targetMemoryUtilizationPercentage : optional(number)
+  })
+  default = {
+    enabled                           = true
+    minReplicas                       = 1
+    maxReplicas                       = 3
+    targetCPUUtilizationPercentage    = 600
+    targetMemoryUtilizationPercentage = 80
+  }
+}

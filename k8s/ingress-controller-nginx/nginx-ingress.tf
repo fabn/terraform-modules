@@ -8,17 +8,22 @@ resource "kubernetes_namespace_v1" "namespace" {
 locals {
   ingress_class_name = var.default_ingress ? "nginx" : "nginx-${var.release_name}"
 
+  resources_config = templatefile("${path.module}/resources.yml", {
+    requests : var.resources.requests
+    limits : var.resources.limits
+  })
+
+  autoscaling = {
+    enabled                           = (coalesce(var.autoscale.enabled, true) && var.enable_metrics)
+    minReplicas                       = coalesce(var.autoscale.minReplicas, 1)
+    maxReplicas                       = coalesce(var.autoscale.maxReplicas, 3)
+    targetCPUUtilizationPercentage    = coalesce(var.autoscale.targetCPUUtilizationPercentage, 600)
+    targetMemoryUtilizationPercentage = coalesce(var.autoscale.targetMemoryUtilizationPercentage, 80)
+  }
+
   # Computed values
   values = {
     controller = {
-      # This is a sane default, make them parametric when needed
-      limits = {
-        memory = "384Mi"
-      }
-      requests = {
-        cpu    = "50m"
-        memory = "128Mi"
-      }
       # Metrics configuration according to inputs
       metrics = {
         enabled = var.enable_metrics
@@ -27,14 +32,7 @@ locals {
         }
       }
       # Autoscaling configuration for controller
-      autoscaling = {
-        enabled     = var.enable_metrics
-        minReplicas = 1
-        maxReplicas = 5
-        targetCPUUtilizationPercentage : 600
-        targetMemoryUtilizationPercentage : 80
-        # TODO: configure custom metric after integrating with prometheus
-      }
+      autoscaling = local.autoscaling
     }
   }
 }
@@ -58,6 +56,7 @@ resource "helm_release" "ingress_nginx" {
       default                = var.default_ingress
       ingress_class_name     = local.ingress_class_name
     }) : null),
+    local.resources_config,
     # Additional values from the module
     yamlencode(local.values),
     # Additional extra values to pass to the chart
