@@ -93,3 +93,8 @@ output "response_body" {
   description = "Request response body"
   value       = data.http.request.response_body
 }
+
+output "parsed" {
+  description = "Request response body as object"
+  value       = try(jsondecode(data.http.request.body))
+}

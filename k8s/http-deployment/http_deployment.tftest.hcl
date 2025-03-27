@@ -29,6 +29,12 @@ run "http_ingress" {
     namespace        = run.ingress_controller.namespace
     create_namespace = false
     image            = "ealen/echo-server:latest"
+    ingress_annotations = {
+      "nginx.ingress.kubernetes.io/proxy-buffering"       = "on"
+      "nginx.ingress.kubernetes.io/configuration-snippet" = <<-EOT
+        add_header X-Test "test";
+    EOT
+    }
   }
 
   assert {
@@ -48,7 +54,7 @@ run "curl_to_ingress" {
   }
 
   module {
-    source = "./curl"
+    source = "../../misc/http"
   }
 
   assert {
@@ -58,7 +64,13 @@ run "curl_to_ingress" {
 
   # Query the echo service to check if it is working as expected returning the hostname in JSON response
   assert {
-    condition     = lookup(jsondecode(output.response_body), "host").hostname == run.http_ingress.host
+    condition     = lookup(output.parsed, "host").hostname == run.http_ingress.host
     error_message = "Echo deployment not working as expected"
+  }
+
+  # Query the echo service to check if it is working as expected returning the hostname in JSON response
+  assert {
+    condition     = lookup(output.parsed, "headers")["X-Test"] == "test"
+    error_message = "Configured snippet not applied"
   }
 }

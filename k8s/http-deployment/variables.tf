@@ -47,3 +47,9 @@ variable "ingress_class_name" {
   type        = string
   default     = null
 }
+
+variable "ingress_annotations" {
+  description = "Ingress annotations to add to the ingress"
+  type        = map(string)
+  default     = {}
+}

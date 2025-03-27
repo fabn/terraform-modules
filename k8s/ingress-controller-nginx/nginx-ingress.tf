@@ -88,11 +88,3 @@ data "digitalocean_loadbalancer" "cluster_lb" {
   name       = var.load_balancer_hostname
   depends_on = [helm_release.ingress_nginx] # Await for the load balancer to be created
 }
-
-# Kubernetes service created by helm release
-data "kubernetes_service_v1" "ingress_service" {
-  metadata {
-    name = "ingress-nginx-controller" # Possibly parametric when overriding release name
-  }
-  depends_on = [helm_release.ingress_nginx] # Await for the load balancer to be created
-}

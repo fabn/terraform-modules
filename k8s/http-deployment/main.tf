@@ -13,6 +13,10 @@ locals {
 
   use_acme      = length(var.tls_hosts) > 0
   output_scheme = local.use_acme ? "https" : "http"
+
+
+  acme_annotation     = local.use_acme ? { "kubernetes.io/tls-acme" = "true" } : {}
+  ingress_annotations = merge(var.ingress_annotations, local.acme_annotation)
 }
 
 resource "kubernetes_namespace_v1" "ns" {
@@ -89,7 +93,7 @@ resource "kubernetes_ingress_v1" "ingress" {
     name      = "${var.name}-ingress"
     namespace = var.namespace
     # Enable automated certificate management
-    annotations = local.use_acme ? { "kubernetes.io/tls-acme" = "true" } : {}
+    annotations = local.ingress_annotations
   }
 
   spec {
