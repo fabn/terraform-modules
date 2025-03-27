@@ -10,6 +10,11 @@ controller:
     enable-brotli: "true"
     # Declare a static cache block to be used in ingresses
     http-snippet: proxy_cache_path /tmp/nginx_cache levels=1:2 keys_zone=static-cache:10m max_size=10g inactive=60m use_temp_path=off;
+    # Restore pre 1.12 default value
+    # @see https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#annotations-risk-level
+    # @see https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations-risk/
+    # @see https://ellie.wtf/notes/ingress-nginx-risky-annotations
+    annotations-risk-level: Critical
   # Used in newrelic to report queuing time metric
   proxySetHeaders:
     X-Request-Start: t=${msec}

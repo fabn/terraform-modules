@@ -7,6 +7,36 @@ resource "kubernetes_namespace_v1" "namespace" {
 
 locals {
   ingress_class_name = var.default_ingress ? "nginx" : "nginx-${var.release_name}"
+
+  # Computed values
+  values = {
+    controller = {
+      # This is a sane default, make them parametric when needed
+      limits = {
+        memory = "384Mi"
+      }
+      requests = {
+        cpu    = "50m"
+        memory = "128Mi"
+      }
+      # Metrics configuration according to inputs
+      metrics = {
+        enabled = var.enable_metrics
+        serviceMonitor = {
+          enabled = var.enable_metrics
+        }
+      }
+      # Autoscaling configuration for controller
+      autoscaling = {
+        enabled     = var.enable_metrics
+        minReplicas = 1
+        maxReplicas = 5
+        targetCPUUtilizationPercentage : 600
+        targetMemoryUtilizationPercentage : 80
+        # TODO: configure custom metric after integrating with prometheus
+      }
+    }
+  }
 }
 
 resource "helm_release" "ingress_nginx" {
@@ -28,50 +58,12 @@ resource "helm_release" "ingress_nginx" {
       default                = var.default_ingress
       ingress_class_name     = local.ingress_class_name
     }) : null),
+    # Additional values from the module
+    yamlencode(local.values),
     # Additional extra values to pass to the chart
     var.extra_values != null ? yamlencode(var.extra_values) : null,
   ])
 
-
-  # set with map needs \\. to escape the dot, see https://getbetterdevops.io/terraform-with-helm/
-
-  # This is a sane default, make them parametric when needed
-  set {
-    name = "controller\\.resources"
-    value = yamlencode({
-      limits = {
-        memory = "384Mi"
-      }
-      requests = {
-        cpu    = "50m"
-        memory = "128Mi"
-      }
-    })
-  }
-
-  # In order to have autoscaling we need to enable metrics
-  set {
-    name = "controller\\.autoscaling"
-    value = yamlencode({
-      enabled     = var.enable_metrics
-      minReplicas = 1
-      maxReplicas = 5
-      targetCPUUtilizationPercentage : 600
-      targetMemoryUtilizationPercentage : 80
-      # TODO: configure custom metric after integrating with prometheus
-    })
-  }
-
-  # Need prometheus to be installed first
-  set {
-    name = "controller\\.metrics"
-    value = yamlencode({
-      enabled = var.enable_metrics
-      serviceMonitor = {
-        enabled = var.enable_metrics
-      }
-    })
-  }
 
   # Ensure the custom error pages are created before the ingress controller is deployed
   depends_on = [kubernetes_config_map_v1.ingress_custom_error_pages]
@@ -94,13 +86,5 @@ resource "kubernetes_config_map_v1" "ingress_custom_error_pages" {
 data "digitalocean_loadbalancer" "cluster_lb" {
   count      = var.digitalocean ? 1 : 0
   name       = var.load_balancer_hostname
-  depends_on = [helm_release.ingress_nginx] # Await for the load balancer to be created
-}
-
-# Kubernetes service created by helm release
-data "kubernetes_service_v1" "ingress_service" {
-  metadata {
-    name = "ingress-nginx-controller" # Possibly parametric when overriding release name
-  }
   depends_on = [helm_release.ingress_nginx] # Await for the load balancer to be created
 }

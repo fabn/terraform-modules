@@ -27,3 +27,15 @@ output "chart_version" {
   description = "Installed chart version of the ingress controller"
   value       = one(helm_release.ingress_nginx.metadata).version
 }
+
+output "values" {
+  description = "Rendered values through values attributes as object"
+  value       = yamldecode(join("\n", helm_release.ingress_nginx.values))
+  sensitive   = true
+}
+
+output "set" {
+  description = "Set values through values attributes as object"
+  value       = { for s in nonsensitive(helm_release.ingress_nginx.set) : s.name => s.value if s.name != "globalConfig.signing_key" }
+  sensitive   = true
+}
