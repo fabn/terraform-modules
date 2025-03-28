@@ -38,8 +38,8 @@ run "remove_finalizer" {
   }
 
   variables {
-    type      = install.kubectl_manifest.agent.kind
-    namespace = install.kubectl_manifest.agent.namespace
-    name      = install.kubectl_manifest.agent.name
+    type      = run.install.agent.kind
+    namespace = run.install.agent.namespace
+    name      = run.install.agent.name
   }
 }

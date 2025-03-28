@@ -7,3 +7,9 @@ output "namespace" {
   description = "The namespace where the datadog operator is deployed"
   value       = helm_release.datadog_operator.namespace
 }
+
+output "agent" {
+  description = "Full agent manifest installed"
+  value       = kubectl_manifest.agent
+  sensitive   = true
+}
