@@ -50,6 +50,8 @@ locals {
   ]
 }
 
+# @see https://github.com/DataDog/datadog-operator/blob/main/examples/datadogagent/datadog-agent-all.yaml
+# @see https://github.com/DataDog/datadog-operator/blob/main/docs/configuration.v2alpha1.md
 resource "kubectl_manifest" "agent" {
   depends_on = [helm_release.datadog_operator]
   yaml_body = yamlencode({
