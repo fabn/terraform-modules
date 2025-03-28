@@ -2,6 +2,9 @@ variables {
   cluster_name = "demo"
   dd_api_key   = "1234567890"
   dd_site      = "datadoghq.com"
+  global_tags = {
+    env = "test"
+  }
 }
 
 run "default_install" {

@@ -39,6 +39,12 @@ variable "dd_site" {
   }
 }
 
+variable "global_tags" {
+  description = "Global env tag set for datadog integrations"
+  type        = map(string)
+  default     = {}
+}
+
 # Discovery options
 # see: https://docs.datadoghq.com/containers/guide/container-discovery-management/?tab=datadogoperator
 variable "discovered_namespaces" {

@@ -63,6 +63,7 @@ resource "kubectl_manifest" "agent" {
       global = {
         clusterName = var.cluster_name,
         site        = var.dd_site,
+        tags        = [for k, v in var.global_tags : "${k}:${v}"]
         credentials = {
           apiSecret = {
             secretName = kubernetes_secret.api_key.metadata.0.name,
