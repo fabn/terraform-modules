@@ -38,8 +38,8 @@ run "remove_finalizer" {
   }
 
   variables {
-    type      = "datadogagents.datadoghq.com"
-    namespace = install.output.namespace
-    name      = "datadog"
+    type      = install.kubectl_manifest.agent.kind
+    namespace = install.kubectl_manifest.agent.namespace
+    name      = install.kubectl_manifest.agent.name
   }
 }
