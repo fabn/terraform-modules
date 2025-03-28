@@ -24,6 +24,7 @@ variables {
 
 # Real install on kind
 run "install" {
+  command = plan # since often fails with Error: uninstallation completed with 1 error(s): context deadline exceeded
   assert {
     condition     = helm_release.datadog_operator.namespace == output.namespace
     error_message = "Operator was not installed"
