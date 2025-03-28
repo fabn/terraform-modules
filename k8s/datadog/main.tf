@@ -22,7 +22,7 @@ resource "kubernetes_namespace_v1" "ns" {
 resource "kubernetes_secret_v1" "api_key" {
   metadata {
     name      = "datadog-api-key"
-    namespace = kubernetes_namespace.ns.metadata.0.name
+    namespace = kubernetes_namespace_v1.ns.metadata.0.name
   }
 
   data = {
@@ -35,7 +35,7 @@ resource "helm_release" "datadog_operator" {
   chart      = "datadog-operator"
   repository = "https://helm.datadoghq.com"
   version    = var.chart_version
-  namespace  = kubernetes_namespace.ns.metadata.0.name
+  namespace  = kubernetes_namespace_v1.ns.metadata.0.name
   atomic     = true
 }
 
@@ -57,7 +57,7 @@ resource "kubectl_manifest" "agent" {
     kind       = "DatadogAgent",
     metadata = {
       name      = "datadog"
-      namespace = kubernetes_namespace.ns.metadata.0.name
+      namespace = kubernetes_namespace_v1.ns.metadata.0.name
     },
     spec = {
       global = {
@@ -66,7 +66,7 @@ resource "kubectl_manifest" "agent" {
         tags        = [for k, v in var.global_tags : "${k}:${v}"]
         credentials = {
           apiSecret = {
-            secretName = kubernetes_secret.api_key.metadata.0.name,
+            secretName = kubernetes_secret_v1.api_key.metadata.0.name,
             keyName    = "api_key"
           }
         }
