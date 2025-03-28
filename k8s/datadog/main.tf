@@ -13,13 +13,13 @@ terraform {
   }
 }
 
-resource "kubernetes_namespace" "ns" {
+resource "kubernetes_namespace_v1" "ns" {
   metadata {
     name = var.namespace
   }
 }
 
-resource "kubernetes_secret" "api_key" {
+resource "kubernetes_secret_v1" "api_key" {
   metadata {
     name      = "datadog-api-key"
     namespace = kubernetes_namespace.ns.metadata.0.name
