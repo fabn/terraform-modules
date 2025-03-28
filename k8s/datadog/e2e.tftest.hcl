@@ -25,7 +25,7 @@ variables {
 # Real install on kind
 run "install" {
   assert {
-    condition     = output.chart_version != null
+    condition     = helm_release.datadog_operator.namespace == output.namespace
     error_message = "Operator was not installed"
   }
 }
