@@ -37,6 +37,11 @@ resource "helm_release" "datadog_operator" {
   version    = var.chart_version
   namespace  = kubernetes_namespace_v1.ns.metadata.0.name
   atomic     = true
+  # Static values and values that need to be templated
+  values = compact([
+    # Additional extra values to pass to the chart
+    var.extra_values != null ? yamlencode(var.extra_values) : null,
+  ])
 }
 
 locals {

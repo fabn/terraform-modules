@@ -75,3 +75,10 @@ variable "collect_all_logging" {
   type        = bool
   default     = true
 }
+
+variable "extra_values" {
+  description = "Extra values to pass to the operator helm chart"
+  type        = map(any)
+  nullable    = true
+  default     = null
+}
