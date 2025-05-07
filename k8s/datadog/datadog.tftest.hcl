@@ -88,3 +88,25 @@ run "with_extra_values" {
     error_message = "Extra values yaml were not properly passed to the chart"
   }
 }
+
+run "node_overrides" {
+  command = plan
+
+  variables {
+    datadog_agent_overrides = {
+      tolerations = []
+      foo         = "bar"
+      whatever = {
+        baz = "qux"
+      }
+    }
+  }
+
+  assert {
+    condition = alltrue([
+      yamldecode(kubectl_manifest.agent.yaml_body_parsed).spec.override.nodeAgent.tolerations == [],
+      yamldecode(kubectl_manifest.agent.yaml_body_parsed).spec.override.nodeAgent.whatever.baz == "qux",
+    ])
+    error_message = "Agent manifest was not properly generated"
+  }
+}

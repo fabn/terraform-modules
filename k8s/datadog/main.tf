@@ -89,9 +89,7 @@ resource "kubectl_manifest" "agent" {
       }
       # Discovery options
       override = {
-        nodeAgent = {
-          env = local.agent_env
-        }
+        nodeAgent = merge({ env = local.agent_env }, var.datadog_agent_overrides)
       }
     }
   })

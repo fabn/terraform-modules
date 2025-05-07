@@ -91,3 +91,11 @@ variable "extra_yaml" {
   nullable    = true
   default     = null
 }
+
+# This is a generic object that will be passed to the DatadogAgent manifest
+variable "datadog_agent_overrides" {
+  description = "Extra YAML fragment to pass to the DatadogAgent manifest"
+  type        = any
+  nullable    = true
+  default     = {}
+}
