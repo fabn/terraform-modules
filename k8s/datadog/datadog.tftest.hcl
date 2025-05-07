@@ -53,3 +53,62 @@ run "logs_and_discovery" {
     error_message = "Exclude list is properly generated"
   }
 }
+
+run "with_extra_values" {
+  command = plan
+
+  variables {
+    # Extra values can only be used with a map of same elements
+    extra_values = {
+      foo = "bar"
+      baz = "qux"
+      nested = {
+        foo = "bar"
+        baz = "qux"
+      }
+    }
+    extra_yaml = <<-YML
+      super:
+        foo: bar
+        baz: qux
+      resources:
+        limits:
+          memory: 1Gi
+        requests:
+          cpu: 100m
+          memory: 1Gi
+    YML
+  }
+
+  assert {
+    # Full object with nested values
+    condition     = yamldecode(helm_release.datadog_operator.values[0]) == var.extra_values
+    error_message = "Extra values were not properly passed to the chart"
+  }
+  assert {
+    condition     = helm_release.datadog_operator.values[1] == var.extra_yaml
+    error_message = "Extra values yaml were not properly passed to the chart"
+  }
+}
+
+run "node_overrides" {
+  command = plan
+
+  variables {
+    datadog_agent_overrides = {
+      tolerations = []
+      foo         = "bar"
+      whatever = {
+        baz = "qux"
+      }
+    }
+  }
+
+  assert {
+    condition = alltrue([
+      yamldecode(kubectl_manifest.agent.yaml_body_parsed).spec.override.nodeAgent.tolerations == [],
+      yamldecode(kubectl_manifest.agent.yaml_body_parsed).spec.override.nodeAgent.whatever.baz == "qux",
+    ])
+    error_message = "Agent manifest was not properly generated"
+  }
+}

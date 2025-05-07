@@ -75,3 +75,26 @@ variable "collect_all_logging" {
   type        = bool
   default     = true
 }
+
+variable "extra_values" {
+  description = "Extra values to pass to the operator helm chart"
+  type        = any # This must be any otherwise terraform will complain about the type
+  nullable    = true
+  default     = null
+}
+
+# This is a YAML fragment that will be passed to the operator helm chart as is
+variable "extra_yaml" {
+  description = "Extra YAML fragment to pass to the operator helm chart"
+  type        = string
+  nullable    = true
+  default     = null
+}
+
+# This is a generic object that will be passed to the DatadogAgent manifest
+variable "datadog_agent_overrides" {
+  description = "Extra values passed to the DatadogAgent manifest in override field"
+  type        = any
+  nullable    = true
+  default     = {}
+}
