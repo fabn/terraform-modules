@@ -41,6 +41,8 @@ resource "helm_release" "datadog_operator" {
   values = compact([
     # Additional extra values to pass to the chart
     var.extra_values != null ? yamlencode(var.extra_values) : null,
+    # Additional values as raw yaml
+    var.extra_yaml != null ? var.extra_yaml : null,
   ])
 }
 

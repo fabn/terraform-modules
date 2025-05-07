@@ -76,9 +76,18 @@ variable "collect_all_logging" {
   default     = true
 }
 
+# You can only use extra_values with a map of same elements, this is a terraform limitation
 variable "extra_values" {
   description = "Extra values to pass to the operator helm chart"
   type        = map(any)
+  nullable    = true
+  default     = null
+}
+
+# This is a YAML fragment that will be passed to the operator helm chart as is
+variable "extra_yaml" {
+  description = "Extra YAML fragment to pass to the operator helm chart"
+  type        = string
   nullable    = true
   default     = null
 }
