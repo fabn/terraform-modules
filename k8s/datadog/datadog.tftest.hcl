@@ -62,6 +62,10 @@ run "with_extra_values" {
     extra_values = {
       foo = "bar"
       baz = "qux"
+      nested = {
+        foo = "bar"
+        baz = "qux"
+      }
     }
     extra_yaml = <<-YML
       super:
@@ -77,10 +81,8 @@ run "with_extra_values" {
   }
 
   assert {
-    condition = alltrue([
-      yamldecode(helm_release.datadog_operator.values[0]).foo == var.extra_values.foo,
-      yamldecode(helm_release.datadog_operator.values[0]).baz == var.extra_values.baz,
-    ])
+    # Full object with nested values
+    condition     = yamldecode(helm_release.datadog_operator.values[0]) == var.extra_values
     error_message = "Extra values were not properly passed to the chart"
   }
   assert {

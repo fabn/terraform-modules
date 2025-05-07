@@ -76,10 +76,9 @@ variable "collect_all_logging" {
   default     = true
 }
 
-# You can only use extra_values with a map of same elements, this is a terraform limitation
 variable "extra_values" {
   description = "Extra values to pass to the operator helm chart"
-  type        = map(any)
+  type        = any # This must be any otherwise terraform will complain about the type
   nullable    = true
   default     = null
 }
