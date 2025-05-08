@@ -112,3 +112,22 @@ run "node_overrides" {
     error_message = "Agent manifest was not properly generated"
   }
 }
+
+run "cluster_agent_overrides" {
+  command = plan
+
+  variables {
+    cluster_agent_overrides = {
+      tolerations = []
+      foo         = "bar"
+      whatever = {
+        baz = "qux"
+      }
+    }
+  }
+
+  assert {
+    condition     = yamldecode(kubectl_manifest.agent.yaml_body_parsed).spec.override.clusterAgent == var.cluster_agent_overrides
+    error_message = "Agent manifest was not properly generated"
+  }
+}
