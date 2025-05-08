@@ -89,7 +89,10 @@ resource "kubectl_manifest" "agent" {
       }
       # Discovery options
       override = {
+        # This will be passed to the datadog agent CRD and will impact datadog-agent DaemonSet
         nodeAgent = merge({ env = local.agent_env }, var.datadog_agent_overrides)
+        # This will be passed to the datadog agent CRD and will impact datadog-agent Deployment
+        clusterAgent = var.cluster_agent_overrides
       }
     }
   })

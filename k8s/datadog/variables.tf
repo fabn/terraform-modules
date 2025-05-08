@@ -93,7 +93,14 @@ variable "extra_yaml" {
 
 # This is a generic object that will be passed to the DatadogAgent manifest
 variable "datadog_agent_overrides" {
-  description = "Extra values passed to the DatadogAgent manifest in override field"
+  description = "Extra values passed to the DatadogAgent manifest in override field for datadog-agent DaemonSet"
+  type        = any
+  nullable    = true
+  default     = {}
+}
+
+variable "cluster_agent_overrides" {
+  description = "Extra values passed to the DatadogAgent manifest in override field for datadog-cluster-agent Deployment"
   type        = any
   nullable    = true
   default     = {}
