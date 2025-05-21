@@ -78,3 +78,4 @@ jobs:
         with:
           working_directory: ${{ matrix.module }}
           sops: true
+          terraform_version: 1.11
