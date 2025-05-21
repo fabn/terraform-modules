@@ -81,12 +81,17 @@ resource "kubectl_manifest" "agent" {
         }
       }
       # Opt in flags for features
-      features = {
+      features = merge({
+        # Enable the agent to collect logs by var
         logCollection = {
           enabled             = var.logging_enabled
           containerCollectAll = var.collect_all_logging
         }
-      }
+        },
+        # User supplied features
+        var.features_override
+      )
+
       # Discovery options
       override = {
         # This will be passed to the datadog agent CRD and will impact datadog-agent DaemonSet
