@@ -131,3 +131,30 @@ run "cluster_agent_overrides" {
     error_message = "Agent manifest was not properly generated"
   }
 }
+
+run "features_override" {
+  command = plan
+
+  variables {
+    logging_enabled = true # To override with features
+    features_override = {
+      apm = {
+        enabled = true
+      }
+      # Override the default value passed
+      logCollection = {
+        enabled = false
+      }
+    }
+  }
+
+  assert {
+    condition = alltrue([
+      yamldecode(kubectl_manifest.agent.yaml_body_parsed).spec.features.logCollection.enabled == false, # Overridden
+      yamldecode(kubectl_manifest.agent.yaml_body_parsed).spec.features.apm.enabled == true,
+      # Because of overridden object, merge is not a deep merge
+      contains(keys(yamldecode(kubectl_manifest.agent.yaml_body_parsed).spec.features.logCollection), "containerCollectAll") == false,
+    ])
+    error_message = "Agent manifest was not properly generated"
+  }
+}

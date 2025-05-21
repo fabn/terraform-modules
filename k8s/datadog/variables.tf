@@ -105,3 +105,10 @@ variable "cluster_agent_overrides" {
   nullable    = true
   default     = {}
 }
+
+variable "features_override" {
+  description = "Extra values passed to the DatadogAgent manifest as features"
+  type        = any
+  nullable    = true
+  default     = {}
+}
