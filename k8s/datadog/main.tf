@@ -51,10 +51,10 @@ locals {
   included_namespaces = [for ns in coalesce(var.discovered_namespaces.included_namespaces, []) : "kube_namespace:${ns}"]
 
   # see https://docs.datadoghq.com/containers/guide/container-discovery-management/?tab=datadogoperator#environment-variables
-  agent_env = [
+  agent_env = concat([
     { name = "DD_CONTAINER_EXCLUDE", value = join(" ", local.excluded_namespaces) },
     { name = "DD_CONTAINER_INCLUDE", value = join(" ", local.included_namespaces) },
-  ]
+  ], var.node_env)
 }
 
 # @see https://github.com/DataDog/datadog-operator/blob/main/examples/datadogagent/datadog-agent-all.yaml

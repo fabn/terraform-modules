@@ -31,6 +31,12 @@ run "logs_and_discovery" {
     discovered_namespaces = {
       included_namespaces = ["default", "kube-system"]
     }
+    node_env = [
+      {
+        name  = "DD_TEST_ENV"
+        value = "test_value"
+      }
+    ]
   }
 
   assert {
@@ -48,6 +54,7 @@ run "logs_and_discovery" {
       local.agent_env == [
         { name = "DD_CONTAINER_EXCLUDE", value = "" },
         { name = "DD_CONTAINER_INCLUDE", value = "kube_namespace:default kube_namespace:kube-system" },
+        { name = "DD_TEST_ENV", value = "test_value" },
       ],
     ])
     error_message = "Exclude list is properly generated"
