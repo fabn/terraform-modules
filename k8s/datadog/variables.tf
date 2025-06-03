@@ -76,6 +76,15 @@ variable "collect_all_logging" {
   default     = true
 }
 
+variable "node_env" {
+  description = "Environment variables to set on the agent pods"
+  type = list(object({
+    name  = string
+    value = string
+  }))
+  default = []
+}
+
 variable "extra_values" {
   description = "Extra values to pass to the operator helm chart"
   type        = any # This must be any otherwise terraform will complain about the type

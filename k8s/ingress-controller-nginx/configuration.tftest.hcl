@@ -13,3 +13,21 @@ run "install_helm_release" {
     error_message = "Output values properly computed"
   }
 }
+
+run "with_extra_values" {
+  command = plan
+  variables {
+    extra_values = {
+      controller = {
+        podAnnotations = {
+          "example.com/annotation" = "value"
+        }
+      }
+    }
+  }
+
+  assert {
+    condition     = output.values.controller.podAnnotations["example.com/annotation"] == "value"
+    error_message = "Values are merged correctly"
+  }
+}
