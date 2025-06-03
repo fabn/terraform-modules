@@ -31,12 +31,9 @@ run "logs_and_discovery" {
     discovered_namespaces = {
       included_namespaces = ["default", "kube-system"]
     }
-    node_env = [
-      {
-        name  = "DD_TEST_ENV"
-        value = "test_value"
-      }
-    ]
+    node_agent_env = {
+      DD_TEST_ENV = "test_value"
+    }
   }
 
   assert {
