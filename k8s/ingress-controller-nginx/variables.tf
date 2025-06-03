@@ -4,8 +4,8 @@ variable "enable_metrics" {
   default     = false
 }
 
-variable "prometheus_enabled" {
-  description = "Whether to install Prometheus (and enable service monitors) in the cluster"
+variable "enable_service_monitor" {
+  description = "Whether to add service monitors to the chart"
   type        = bool
   default     = false
 }
@@ -62,6 +62,12 @@ variable "extra_values" {
   type        = map(any)
   nullable    = true
   default     = null
+}
+
+variable "additional_set_values" {
+  description = "Additional values to pass to the helm chart via set"
+  type        = map(any)
+  default     = {}
 }
 
 variable "resources" {

@@ -28,7 +28,7 @@ locals {
       metrics = {
         enabled = var.enable_metrics
         serviceMonitor = {
-          enabled = var.enable_metrics
+          enabled = var.enable_service_monitor && var.enable_metrics
         }
       }
       # Autoscaling configuration for controller
@@ -63,6 +63,13 @@ resource "helm_release" "ingress_nginx" {
     var.extra_values != null ? yamlencode(var.extra_values) : null,
   ])
 
+  dynamic "set" {
+    for_each = var.additional_set_values
+    content {
+      name  = set.key
+      value = set.value
+    }
+  }
 
   # Ensure the custom error pages are created before the ingress controller is deployed
   depends_on = [kubernetes_config_map_v1.ingress_custom_error_pages]
