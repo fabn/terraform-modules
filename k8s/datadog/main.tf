@@ -54,7 +54,11 @@ locals {
   agent_env = concat([
     { name = "DD_CONTAINER_EXCLUDE", value = join(" ", local.excluded_namespaces) },
     { name = "DD_CONTAINER_INCLUDE", value = join(" ", local.included_namespaces) },
-  ], var.node_env)
+    ],
+    [for k, v in var.node_agent_env : {
+      name  = k
+      value = v
+  }])
 }
 
 # @see https://github.com/DataDog/datadog-operator/blob/main/examples/datadogagent/datadog-agent-all.yaml

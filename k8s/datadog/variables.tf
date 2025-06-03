@@ -76,13 +76,10 @@ variable "collect_all_logging" {
   default     = true
 }
 
-variable "node_env" {
+variable "node_agent_env" {
   description = "Environment variables to set on the agent pods"
-  type = list(object({
-    name  = string
-    value = string
-  }))
-  default = []
+  type        = map(string)
+  default     = {}
 }
 
 variable "extra_values" {
