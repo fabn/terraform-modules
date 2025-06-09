@@ -9,7 +9,23 @@ controller:
     # Enable brotli compression
     enable-brotli: "true"
     # Declare a static cache block to be used in ingresses
-    http-snippet: proxy_cache_path /tmp/nginx_cache levels=1:2 keys_zone=static-cache:10m max_size=10g inactive=60m use_temp_path=off;
+    # And enable nginx status endpoint, see https://github.com/DataDog/integrations-core/tree/master/nginx_ingress_controller
+    http-snippet: |
+      # Declare a static cache block to be used in ingresses
+      proxy_cache_path /tmp/nginx_cache levels=1:2 keys_zone=static-cache:10m max_size=10g inactive=60m use_temp_path=off;
+      # Expose nginx status endpoint
+      server {
+        listen 18080;
+
+        location /nginx_status {
+          allow all;
+          stub_status on;
+        }
+
+        location / {
+          return 404;
+        }
+      }
     # Restore pre 1.12 default value
     # @see https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#annotations-risk-level
     # @see https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations-risk/
