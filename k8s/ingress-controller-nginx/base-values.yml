@@ -34,3 +34,4 @@ controller:
   # Used in newrelic to report queuing time metric
   proxySetHeaders:
     X-Request-Start: t=${msec}
+    X-Request-ID: $req_id
