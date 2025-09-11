@@ -113,3 +113,9 @@ variable "letsencrypt" {
     error_message = "Email must be set when letsencrypt is enabled"
   }
 }
+
+variable "enable_performance_dashboard" {
+  description = "Whether to enable the performance dashboard (needs rancher monitoring to be enabled)"
+  type        = bool
+  default     = false
+}

@@ -85,7 +85,7 @@ resource "helm_release" "rancher" {
 
   # List of YAML templates to merge
   values = compact([
-    local.performance_dashboard,
+    var.enable_performance_dashboard ? local.performance_dashboard : null,
     # Let's encrypt settings
     var.letsencrypt.enabled ? yamlencode(local.tls_values) : null,
     # Additional extra values to pass to the chart
