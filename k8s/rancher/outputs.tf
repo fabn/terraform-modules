@@ -42,7 +42,7 @@ output "rancher_token" {
 }
 
 locals {
-  yaml_values = length(helm_release.rancher.values) > 0 ? yamldecode(join("\n", helm_release.rancher.values)) : "{}"
+  yaml_values = length(helm_release.rancher.values) > 0 ? join("\n", helm_release.rancher.values) : "{}"
 }
 
 output "values" {
