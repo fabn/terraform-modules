@@ -81,7 +81,7 @@ variable "ingress_class_name" {
 
 variable "extra_values" {
   description = "Extra values to pass to the helm chart"
-  type        = map(any)
+  type        = any # Should be map(any) but causes issues with TF about all elements being known
   nullable    = true
   default     = null
 }
