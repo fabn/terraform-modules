@@ -101,4 +101,6 @@ resource "rancher2_bootstrap" "admin" {
   password = local.admin_password
   # By default generate a token that doesn't expire
   token_ttl = 0
+  # Make dependency explicit
+  depends_on = [helm_release.rancher]
 }
