@@ -16,14 +16,14 @@ locals {
   server_url = "https://${var.hostname}"
 
   # # https://ranchermanager.docs.rancher.com/how-to-guides/advanced-user-guides/monitoring-alerting-guides/enable-monitoring#enabling-the-rancher-performance-dashboard
-  performance_dashboard = yamlencode({
+  performance_dashboard = {
     extraEnv = [
       {
         name  = "CATTLE_PROMETHEUS_METRICS"
         value = "true"
       }
     ]
-  })
+  }
 
 }
 resource "kubernetes_namespace_v1" "ns" {
@@ -85,7 +85,7 @@ resource "helm_release" "rancher" {
 
   # List of YAML templates to merge
   values = compact([
-    var.enable_performance_dashboard ? local.performance_dashboard : null,
+    var.enable_performance_dashboard ? yamlencode(local.performance_dashboard) : null,
     # Let's encrypt settings
     var.letsencrypt.enabled ? yamlencode(local.tls_values) : null,
     # Additional extra values to pass to the chart

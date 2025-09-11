@@ -106,7 +106,9 @@ variable "letsencrypt" {
     environment = optional(string, "production")
   })
   default = {
-    email = "" # Will fail if not set
+    enabled     = false
+    email       = "" # Will fail if not set
+    environment = "production"
   }
   validation {
     condition     = !var.letsencrypt.enabled || length(var.letsencrypt.email) > 0
