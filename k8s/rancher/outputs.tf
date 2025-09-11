@@ -41,9 +41,13 @@ output "rancher_token" {
   sensitive = true
 }
 
+locals {
+  yaml_values = length(helm_release.rancher.values) > 0 ? yamldecode(join("\n", helm_release.rancher.values)) : "{}"
+}
+
 output "values" {
   description = "Rendered values through values attributes as object"
-  value       = length(helm_release.rancher.values) > 0 ? yamldecode(join("\n", helm_release.rancher.values)) : {}
+  value       = yamldecode(local.yaml_values)
   sensitive   = true
 }
 
