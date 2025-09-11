@@ -11,7 +11,7 @@ output "namespace" {
 
 output "chart_version" {
   description = "Installed chart version"
-  value       = one(helm_release.rancher.metadata).version
+  value       = helm_release.rancher.metadata.version
 }
 
 output "bootstrap_password" {

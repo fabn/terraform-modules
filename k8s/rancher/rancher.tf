@@ -54,6 +54,20 @@ locals {
       environment = coalesce(var.letsencrypt.environment, "production")
     }
   }
+
+  base_values = {
+    hostname          = var.hostname
+    bootstrapPassword = local.bootstrap_password
+    # Can be ingress or external, default is ingress but it requires cert
+    # manager to be installed, since it declare an Issuer
+    tls      = !var.letsencrypt.enabled && var.self_signed ? "external" : "ingress"
+    replicas = var.replicas
+  }
+
+  final_values = merge(
+    local.base_values,
+    var.ingress_class_name != null ? { "ingress.ingressClassName" = var.ingress_class_name } : {}
+  )
 }
 
 resource "helm_release" "rancher" {
@@ -67,6 +81,7 @@ resource "helm_release" "rancher" {
   disable_webhooks  = var.disable_hooks # Some hook fails in CI so disable them
   disable_crd_hooks = var.disable_hooks # Some hook fails in CI so disable them
 
+  set = [for k, v in local.final_values : { name = k, value = tostring(v) }]
 
   # List of YAML templates to merge
   values = compact([
@@ -76,37 +91,6 @@ resource "helm_release" "rancher" {
     # Additional extra values to pass to the chart
     var.extra_values != null ? yamlencode(var.extra_values) : null,
   ])
-
-  set {
-    name  = "hostname"
-    value = var.hostname
-  }
-
-  set {
-    name  = "bootstrapPassword"
-    value = local.bootstrap_password
-  }
-
-  # Can be ingress or external, default is ingress but it requires cert
-  # manager to be installed, since it declare an Issuer
-  set {
-    name  = "tls"
-    value = !var.letsencrypt.enabled && var.self_signed ? "external" : "ingress"
-  }
-
-  set {
-    name  = "replicas"
-    value = var.replicas
-  }
-
-  # Optionally sets a specific ingress class name
-  dynamic "set" {
-    for_each = var.ingress_class_name != null ? [1] : []
-    content {
-      name  = "ingress.ingressClassName"
-      value = var.ingress_class_name
-    }
-  }
 }
 
 # Bootstrap the rancher installation
@@ -115,8 +99,6 @@ resource "rancher2_bootstrap" "admin" {
   initial_password = local.bootstrap_password
   # Will be kept in sync for the admin user
   password = local.admin_password
-  # Don't send telemetry data
-  telemetry = false
   # By default generate a token that doesn't expire
   token_ttl = 0
 }
