@@ -52,3 +52,8 @@ output "set" {
   value       = { for s in nonsensitive(helm_release.rancher.set) : s.name => s.value if s.name != "globalConfig.signing_key" }
   sensitive   = true
 }
+
+output "hostname" {
+  description = "The hostname used to access rancher"
+  value       = var.hostname
+}
