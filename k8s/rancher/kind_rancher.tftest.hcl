@@ -82,7 +82,7 @@ run "install_full_release" {
   }
 }
 
-run "boostrap" {
+run "bootstrap" {
   module {
     source = "./bootstrap"
   }
