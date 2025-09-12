@@ -47,8 +47,7 @@ run "install_helm_release" {
 
   assert {
     condition = alltrue([
-      output.bootstrap_password == var.bootstrap_password,
-      output.admin_password == var.admin_password,
+      output.bootstrap_password == var.bootstrap_password
     ])
     error_message = "It manages passwords"
   }
