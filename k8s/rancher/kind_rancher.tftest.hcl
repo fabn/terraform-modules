@@ -115,6 +115,6 @@ run "remove_finalizer" {
   }
 
   variables {
-    name = run.install_full_release.outputs.namespace
+    name = run.install_full_release.namespace
   }
 }
