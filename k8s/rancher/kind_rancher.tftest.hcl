@@ -31,6 +31,10 @@ variables {
 run "install_helm_release" {
   command = plan
 
+  variables {
+    bootstrap_password = "superBootstrap1234"
+  }
+
   assert {
     condition     = output.release_name == "rancher"
     error_message = "Wrong release name"
@@ -39,6 +43,14 @@ run "install_helm_release" {
   assert {
     condition     = output.server_url == "https://rancher.fabn.dev"
     error_message = "It outputs server url for ${var.hostname}"
+  }
+
+  assert {
+    condition = alltrue([
+      output.bootstrap_password == var.bootstrap_password,
+      output.admin_password == var.admin_password,
+    ])
+    error_message = "It manages passwords"
   }
 }
 
@@ -77,7 +89,7 @@ run "boostrap" {
   }
 
   variables {
-    bootstrap_password = "superBootstrap1234"
+    bootstrap_password = run.install_full_release.bootstrap_password
     admin_password     = "superSecret1234"
   }
 

@@ -1,5 +1,11 @@
+# bootstrap and admin password
+resource "random_password" "bootstrap" {
+  count  = var.bootstrap_password == null ? 1 : 0
+  length = 16
+}
 
 locals {
+  bootstrap_password = var.bootstrap_password != null ? var.bootstrap_password : random_password.bootstrap[0].result
   # Final server url, always in https
   server_url = "https://${var.hostname}"
 
@@ -44,7 +50,8 @@ locals {
   }
 
   base_values = {
-    hostname = var.hostname
+    hostname          = var.hostname
+    bootstrapPassword = local.bootstrap_password
     # Can be ingress or external, default is ingress but it requires cert
     # manager to be installed, since it declare an Issuer
     tls      = !var.letsencrypt.enabled && var.self_signed ? "external" : "ingress"

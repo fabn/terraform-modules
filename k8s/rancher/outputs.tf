@@ -14,6 +14,12 @@ output "chart_version" {
   value       = helm_release.rancher.metadata.version
 }
 
+output "bootstrap_password" {
+  description = "The bootstrap password"
+  value       = local.bootstrap_password
+  sensitive   = true
+}
+
 output "server_url" {
   description = "The server url for rancher"
   value       = local.server_url
