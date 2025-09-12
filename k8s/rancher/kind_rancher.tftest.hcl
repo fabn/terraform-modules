@@ -106,3 +106,15 @@ run "test_login" {
     error_message = "It returns a valid token"
   }
 }
+
+# Patch the cattle-system namespace to remove the finalizer otherwise
+# it won't be able to teardown
+run "remove_finalizer" {
+  module {
+    source = "../../misc/finalizer"
+  }
+
+  variables {
+    name = run.install_full_release.outputs.namespace
+  }
+}
