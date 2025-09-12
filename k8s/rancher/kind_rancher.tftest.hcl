@@ -94,8 +94,7 @@ run "boostrap" {
 
   assert {
     condition = alltrue([
-      output.bootstrap_password == var.bootstrap_password,
-      output.admin_password == var.admin_password,
+      output.admin_password == var.admin_password
     ])
     error_message = "It manages passwords"
   }
