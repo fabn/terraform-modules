@@ -1,9 +1,3 @@
-output "bootstrap_password" {
-  description = "The bootstrap password"
-  value       = local.bootstrap_password
-  sensitive   = true
-}
-
 output "admin_password" {
   description = "The current password for the admin user"
   value       = local.admin_password

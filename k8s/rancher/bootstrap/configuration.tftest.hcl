@@ -7,9 +7,13 @@ mock_provider "rancher2" {
   }
 }
 
+variables {
+  bootstrap_password = "initialPassword1234"
+}
+
 run "default" {
   assert {
-    condition     = (output.admin_password != null && output.bootstrap_password != null)
+    condition     = output.admin_password != null
     error_message = "Didn't generate credentials"
   }
 }
@@ -27,12 +31,11 @@ run "token_generation" {
 
 run "with_given_passwords" {
   variables {
-    admin_password     = "superSecret1234"
-    bootstrap_password = "superBootstrap1234"
+    admin_password = "superSecret1234"
   }
 
   assert {
-    condition     = output.admin_password == var.admin_password && output.bootstrap_password == var.bootstrap_password
+    condition     = output.admin_password == var.admin_password
     error_message = "Didn't generate credentials"
   }
 }

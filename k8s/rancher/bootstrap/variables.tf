@@ -1,8 +1,7 @@
 variable "bootstrap_password" {
   description = "The password to use for bootstrapping rancher, pass this only to import existing installations"
   type        = string
-  default     = null
-  nullable    = true
+  sensitive   = true
 }
 
 variable "admin_password" {
@@ -10,4 +9,5 @@ variable "admin_password" {
   type        = string
   default     = null
   nullable    = true
+  sensitive   = true
 }
