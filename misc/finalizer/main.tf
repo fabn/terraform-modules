@@ -20,6 +20,8 @@ variable "name" {
 variable "namespace" {
   description = "The namespace to pass to kubectl"
   type        = string
+  nullable    = true
+  default     = null
 }
 
 variable "sleep_for" {
@@ -28,14 +30,14 @@ variable "sleep_for" {
 }
 
 resource "time_sleep" "wait" {
-  destroy_duration = "30s"
+  destroy_duration = var.sleep_for
 }
 
 resource "null_resource" "remove_finalizers" {
   depends_on = [time_sleep.wait]
   provisioner "local-exec" {
     command = <<EOT
-      kubectl patch ${var.type}/${var.name} -n ${var.namespace} --type json --patch='[ { "op": "remove", "path": "/metadata/finalizers" } ]'
+      kubectl patch ${var.type}/${var.name} ${var.namespace != null ? "-n ${var.namespace}" : ""} --type json --patch='[ { "op": "remove", "path": "/metadata/finalizers" } ]'
     EOT
   }
 }

@@ -25,7 +25,7 @@ output "ingress_class_name" {
 
 output "chart_version" {
   description = "Installed chart version of the ingress controller"
-  value       = one(helm_release.ingress_nginx.metadata).version
+  value       = helm_release.ingress_nginx.metadata.version
 }
 
 output "values" {

@@ -4,10 +4,20 @@ provider "kubernetes" {
 }
 
 provider "helm" {
-  kubernetes {
+  kubernetes = {
     config_path    = "~/.kube/config"
     config_context = "kind-kind"
   }
+}
+
+# Used to bootstrap the Rancher installation
+provider "rancher2" {
+  api_url   = run.install_full_release.server_url
+  bootstrap = true
+  # On creation it might take a while to be ready
+  timeout = "5m"
+  # Usually true only in tests
+  insecure = true
 }
 
 variables {
@@ -23,7 +33,6 @@ run "install_helm_release" {
 
   variables {
     bootstrap_password = "superBootstrap1234"
-    admin_password     = "superSecret1234"
   }
 
   assert {
@@ -38,8 +47,7 @@ run "install_helm_release" {
 
   assert {
     condition = alltrue([
-      output.bootstrap_password == var.bootstrap_password,
-      output.admin_password == var.admin_password,
+      output.bootstrap_password == var.bootstrap_password
     ])
     error_message = "It manages passwords"
   }
@@ -74,6 +82,24 @@ run "install_full_release" {
   }
 }
 
+run "bootstrap" {
+  module {
+    source = "./bootstrap"
+  }
+
+  variables {
+    bootstrap_password = run.install_full_release.bootstrap_password
+    admin_password     = "superSecret1234"
+  }
+
+  assert {
+    condition = alltrue([
+      output.admin_password == var.admin_password
+    ])
+    error_message = "It manages passwords"
+  }
+}
+
 run "test_login" {
   variables {
     url             = "${run.install_full_release.server_url}/v3-public/localProviders/local?action=login"
@@ -85,7 +111,7 @@ run "test_login" {
     }
     request_body = jsonencode({
       username = "admin",
-      password = run.install_full_release.admin_password
+      password = run.bootstrap.admin_password
     })
   }
 
@@ -104,5 +130,17 @@ run "test_login" {
       startswith(jsondecode(output.response_body).token, "token")
     ])
     error_message = "It returns a valid token"
+  }
+}
+
+# Patch the cattle-system namespace to remove the finalizer otherwise
+# it won't be able to teardown
+run "remove_finalizer" {
+  module {
+    source = "../../misc/finalizer"
+  }
+
+  variables {
+    name = run.install_full_release.namespace
   }
 }

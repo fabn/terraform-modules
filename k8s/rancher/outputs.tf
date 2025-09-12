@@ -11,7 +11,7 @@ output "namespace" {
 
 output "chart_version" {
   description = "Installed chart version"
-  value       = one(helm_release.rancher.metadata).version
+  value       = helm_release.rancher.metadata.version
 }
 
 output "bootstrap_password" {
@@ -20,30 +20,18 @@ output "bootstrap_password" {
   sensitive   = true
 }
 
-output "admin_password" {
-  description = "The current password for the admin user"
-  value       = local.admin_password
-  sensitive   = true
-}
-
 output "server_url" {
   description = "The server url for rancher"
   value       = local.server_url
 }
 
-output "rancher_token" {
-  description = "The tokens to access the rancher API"
-  value = {
-    api_token  = rancher2_bootstrap.admin.token,
-    access_key = rancher2_bootstrap.admin.token_id
-    secret_key = split(":", rancher2_bootstrap.admin.token)[1]
-  }
-  sensitive = true
+locals {
+  yaml_values = length(helm_release.rancher.values) > 0 ? join("\n", helm_release.rancher.values) : "{}"
 }
 
 output "values" {
   description = "Rendered values through values attributes as object"
-  value       = yamldecode(join("\n", helm_release.rancher.values))
+  value       = yamldecode(local.yaml_values)
   sensitive   = true
 }
 
@@ -51,4 +39,9 @@ output "set" {
   description = "Set values through values attributes as object"
   value       = { for s in nonsensitive(helm_release.rancher.set) : s.name => s.value if s.name != "globalConfig.signing_key" }
   sensitive   = true
+}
+
+output "hostname" {
+  description = "The hostname used to access rancher"
+  value       = var.hostname
 }

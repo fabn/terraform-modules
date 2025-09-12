@@ -63,13 +63,7 @@ resource "helm_release" "ingress_nginx" {
     var.extra_values != null ? yamlencode(var.extra_values) : null,
   ])
 
-  dynamic "set" {
-    for_each = var.additional_set_values
-    content {
-      name  = set.key
-      value = set.value
-    }
-  }
+  set = [for k, v in var.additional_set_values : { name = k, value = tostring(v) }]
 
   # Ensure the custom error pages are created before the ingress controller is deployed
   depends_on = [kubernetes_config_map_v1.ingress_custom_error_pages]

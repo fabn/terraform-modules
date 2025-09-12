@@ -53,13 +53,6 @@ variable "bootstrap_password" {
   nullable    = true
 }
 
-variable "admin_password" {
-  description = "The password to use for the admin user"
-  type        = string
-  default     = null
-  nullable    = true
-}
-
 variable "hostname" {
   description = "The hostname to configure for rancher"
   type        = string
@@ -81,7 +74,7 @@ variable "ingress_class_name" {
 
 variable "extra_values" {
   description = "Extra values to pass to the helm chart"
-  type        = map(any)
+  type        = any # Should be map(any) but causes issues with TF about all elements being known
   nullable    = true
   default     = null
 }
@@ -101,9 +94,9 @@ variable "disable_hooks" {
 variable "letsencrypt" {
   description = "Settings for letsencrypt"
   type = object({
-    enabled     = optional(bool)
+    enabled     = optional(bool, false)
     email       = string
-    environment = optional(string)
+    environment = optional(string, "production")
   })
   default = {
     enabled     = false
@@ -114,4 +107,10 @@ variable "letsencrypt" {
     condition     = !var.letsencrypt.enabled || length(var.letsencrypt.email) > 0
     error_message = "Email must be set when letsencrypt is enabled"
   }
+}
+
+variable "enable_performance_dashboard" {
+  description = "Whether to enable the performance dashboard (needs rancher monitoring to be enabled)"
+  type        = bool
+  default     = false
 }
