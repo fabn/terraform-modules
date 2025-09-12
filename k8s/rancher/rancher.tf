@@ -1,17 +1,5 @@
-# bootstrap and admin password
-resource "random_password" "bootstrap" {
-  count  = var.bootstrap_password == null ? 1 : 0
-  length = 16
-}
-
-resource "random_password" "admin" {
-  count  = var.admin_password == null ? 1 : 0
-  length = 16
-}
 
 locals {
-  bootstrap_password = var.bootstrap_password != null ? var.bootstrap_password : random_password.bootstrap[0].result
-  admin_password     = var.admin_password != null ? var.admin_password : random_password.admin[0].result
   # Final server url, always in https
   server_url = "https://${var.hostname}"
 
@@ -56,8 +44,7 @@ locals {
   }
 
   base_values = {
-    hostname          = var.hostname
-    bootstrapPassword = local.bootstrap_password
+    hostname = var.hostname
     # Can be ingress or external, default is ingress but it requires cert
     # manager to be installed, since it declare an Issuer
     tls      = !var.letsencrypt.enabled && var.self_signed ? "external" : "ingress"
@@ -91,16 +78,4 @@ resource "helm_release" "rancher" {
     # Additional extra values to pass to the chart
     var.extra_values != null ? yamlencode(var.extra_values) : null,
   ])
-}
-
-# Bootstrap the rancher installation
-resource "rancher2_bootstrap" "admin" {
-  # Used to bootstrap the rancher installation
-  initial_password = local.bootstrap_password
-  # Will be kept in sync for the admin user
-  password = local.admin_password
-  # By default generate a token that doesn't expire
-  token_ttl = 0
-  # Make dependency explicit
-  depends_on = [helm_release.rancher]
 }

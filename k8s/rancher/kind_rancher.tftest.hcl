@@ -10,6 +10,16 @@ provider "helm" {
   }
 }
 
+# Used to bootstrap the Rancher installation
+provider "rancher2" {
+  api_url   = run.install_full_release.server_url
+  bootstrap = true
+  # On creation it might take a while to be ready
+  timeout = "5m"
+  # Usually true only in tests
+  insecure = true
+}
+
 variables {
   hostname    = "rancher.fabn.dev"
   replicas    = 1
@@ -21,11 +31,6 @@ variables {
 run "install_helm_release" {
   command = plan
 
-  variables {
-    bootstrap_password = "superBootstrap1234"
-    admin_password     = "superSecret1234"
-  }
-
   assert {
     condition     = output.release_name == "rancher"
     error_message = "Wrong release name"
@@ -34,14 +39,6 @@ run "install_helm_release" {
   assert {
     condition     = output.server_url == "https://rancher.fabn.dev"
     error_message = "It outputs server url for ${var.hostname}"
-  }
-
-  assert {
-    condition = alltrue([
-      output.bootstrap_password == var.bootstrap_password,
-      output.admin_password == var.admin_password,
-    ])
-    error_message = "It manages passwords"
   }
 }
 
@@ -74,6 +71,25 @@ run "install_full_release" {
   }
 }
 
+run "boostrap" {
+  module {
+    source = "./bootstrap"
+  }
+
+  variables {
+    bootstrap_password = "superBootstrap1234"
+    admin_password     = "superSecret1234"
+  }
+
+  assert {
+    condition = alltrue([
+      output.bootstrap_password == var.bootstrap_password,
+      output.admin_password == var.admin_password,
+    ])
+    error_message = "It manages passwords"
+  }
+}
+
 run "test_login" {
   variables {
     url             = "${run.install_full_release.server_url}/v3-public/localProviders/local?action=login"
@@ -85,7 +101,7 @@ run "test_login" {
     }
     request_body = jsonencode({
       username = "admin",
-      password = run.install_full_release.admin_password
+      password = run.bootstrap.admin_password
     })
   }
 
