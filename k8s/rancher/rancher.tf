@@ -1,7 +1,9 @@
 # bootstrap and admin password
 resource "random_password" "bootstrap" {
   count  = var.bootstrap_password == null ? 1 : 0
-  length = 16
+  length = 20
+  # Some chars might break values output when parsed as yaml
+  special = false
 }
 
 locals {
