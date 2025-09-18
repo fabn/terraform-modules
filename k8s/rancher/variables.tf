@@ -114,3 +114,15 @@ variable "enable_performance_dashboard" {
   type        = bool
   default     = false
 }
+
+variable "namespace_labels" {
+  description = "Labels to add to the namespace"
+  type        = map(string)
+  default     = {}
+}
+
+variable "namespace_annotations" {
+  description = "Annotations to add to the namespace"
+  type        = map(string)
+  default     = {}
+}

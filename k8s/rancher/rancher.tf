@@ -20,12 +20,14 @@ locals {
       }
     ]
   }
-
 }
+
 resource "kubernetes_namespace_v1" "ns" {
   count = var.create_namespace ? 1 : 0
   metadata {
-    name = var.namespace
+    name        = var.namespace
+    labels      = var.namespace_labels
+    annotations = var.namespace_annotations
   }
   # Used mainly in test to allow the namespace to be destroyed
   provisioner "local-exec" {
