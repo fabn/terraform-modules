@@ -34,3 +34,9 @@ variable "terraform_variables" {
   default     = {}
   sensitive   = true
 }
+
+variable "before_init" {
+  description = "List of before init scripts to perform upon context initialization"
+  default     = []
+  type        = list(string)
+}

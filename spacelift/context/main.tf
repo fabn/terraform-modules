@@ -15,6 +15,7 @@ resource "spacelift_context" "context" {
   description = var.description
   labels      = [for label in var.attach_to : "autoattach:${label}"]
   space_id    = data.spacelift_space.root.id
+  before_init = var.before_init
 }
 
 resource "spacelift_environment_variable" "env" {
