@@ -11,7 +11,8 @@ terraform {
       source = "hashicorp/random"
     }
     rancher2 = {
-      source = "rancher/rancher2"
+      source  = "rancher/rancher2"
+      version = ">= 8"
     }
   }
 }
