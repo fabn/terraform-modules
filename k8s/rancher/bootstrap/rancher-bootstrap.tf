@@ -25,4 +25,6 @@ resource "rancher2_bootstrap" "admin" {
   password = local.admin_password
   # By default generate a token that doesn't expire
   token_ttl = 0
+  # Refresh the token on each apply when expired
+  token_update = var.token_update
 }

@@ -11,3 +11,9 @@ variable "admin_password" {
   nullable    = true
   sensitive   = true
 }
+
+variable "token_update" {
+  description = "Whether to update the token on each apply when expired"
+  type        = bool
+  default     = true
+}
