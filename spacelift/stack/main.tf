@@ -27,6 +27,13 @@ resource "spacelift_stack" "stack" {
   terraform_version               = "1.5.7"
   terraform_workflow_tool         = "TERRAFORM_FOSS"
   runner_image                    = var.runner_image
+
+  dynamic "github_enterprise" {
+    for_each = var.namespace != null ? [var.namespace] : []
+    content {
+      namespace = github_enterprise.value
+    }
+  }
 }
 
 resource "spacelift_environment_variable" "secrets" {

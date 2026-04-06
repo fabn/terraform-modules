@@ -69,6 +69,12 @@ variable "terraform_variables" {
   sensitive = true
 }
 
+variable "namespace" {
+  description = "GitHub org/user owner of the repository. When set, a github_enterprise block is used instead of the default integration."
+  type        = string
+  default     = null
+}
+
 variable "dependencies" {
   description = "Map of dependencies from other stacks"
   type        = map(map(string))
