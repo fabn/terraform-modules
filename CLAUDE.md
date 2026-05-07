@@ -54,7 +54,8 @@ Several modules ship a gitignored `main_override.tf` (see `*_override.tf` rule i
 - **`terraform-check.yml`** — runs `terraform fmt -check -recursive` on every push touching `*.tf`.
 - **`e2e.yml`** — on PRs, uses `tj-actions/changed-files` (matrix mode) to fan out one job per changed module directory, then runs the appropriate `terraform test` against Kind / DigitalOcean as described above. SOPS-encrypted secrets are decrypted using `SOPS_AGE_KEY`.
 - **`actionlint.yml`** — lints workflow files (also enforced by lefthook).
-- **`release-drafter.yml`** — drafts releases. PR labels drive both categorization (`feature`/`fix`/`chore`/`dependencies`) and semver bump (`major`/`minor`/`patch`). `skip-changelog` excludes a PR. Use real labels on PRs so the release notes and version resolve correctly.
+- **`release-drafter.yml`** — drafts releases. PR labels drive categorization (`enhancement`/`bug`/`chore`/`dependencies`) and semver bump (`major`/`minor`; absent label = `patch` default). Apply one of each kind per PR. `skip-changelog` excludes. Publish a draft with `gh release edit <tag> --draft=false` (the GitHub MCP does not expose release editing).
+  - Module-change semver rule: bump is `major` only if consumer config must change to upgrade. Adding a resource to the module graph (e.g. extracting an attribute into a dedicated resource) is `minor` even when `apply` is idempotent — consumers see `+1 to add` in plan but no infra-side change. Removing deprecated `Optional+Computed` attributes the provider treats as no-ops is `patch`.
 
 ## Local hooks (lefthook)
 
