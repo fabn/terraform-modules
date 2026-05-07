@@ -1,0 +1,3 @@
+[tools]
+terraform = "1.11.4"
+actionlint = "1.7.7"
