@@ -1,7 +1,8 @@
 terraform {
   required_providers {
     github = {
-      source = "integrations/github"
+      source  = "integrations/github"
+      version = ">= 6.12.0"
     }
   }
 }
@@ -118,12 +119,10 @@ resource "github_repository" "repo" {
   allow_rebase_merge          = false
   allow_update_branch         = true
   delete_branch_on_merge      = true
-  has_downloads               = false
   has_issues                  = var.has_issues
   has_projects                = var.has_projects
   squash_merge_commit_message = "BLANK"
   squash_merge_commit_title   = "PR_TITLE"
-  vulnerability_alerts        = var.has_dependabot
   auto_init                   = var.auto_init
   archived                    = var.archived
   archive_on_destroy          = var.archive_on_destroy
@@ -131,6 +130,11 @@ resource "github_repository" "repo" {
   lifecycle {
     prevent_destroy = true
   }
+}
+
+resource "github_repository_vulnerability_alerts" "alerts" {
+  repository = github_repository.repo.name
+  enabled    = var.has_dependabot
 }
 
 data "github_branch" "default" {
@@ -148,18 +152,18 @@ resource "github_branch_default" "default" {
 
 # Configure a secret for each passed value
 resource "github_actions_secret" "secrets" {
-  for_each        = nonsensitive(var.secrets)
-  repository      = github_repository.repo.name
-  secret_name     = each.key
-  plaintext_value = each.value
+  for_each    = nonsensitive(var.secrets)
+  repository  = github_repository.repo.name
+  secret_name = each.key
+  value       = each.value
 }
 
 # Secrets for repository
 resource "github_dependabot_secret" "secrets" {
-  for_each        = nonsensitive(var.dependabot_secrets)
-  repository      = github_repository.repo.name
-  secret_name     = each.key
-  plaintext_value = each.value
+  for_each    = nonsensitive(var.dependabot_secrets)
+  repository  = github_repository.repo.name
+  secret_name = each.key
+  value       = each.value
 }
 
 

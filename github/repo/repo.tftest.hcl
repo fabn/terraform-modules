@@ -31,11 +31,11 @@ run "create_repo_with_secrets" {
   }
 
   assert {
-    condition     = github_actions_secret.secrets["FOO"].plaintext_value == "bar"
+    condition     = github_actions_secret.secrets["FOO"].value == "bar"
     error_message = "The secret was not created"
   }
   assert {
-    condition     = github_dependabot_secret.secrets["FOO"].plaintext_value == "baz"
+    condition     = github_dependabot_secret.secrets["FOO"].value == "baz"
     error_message = "The secret was not created"
   }
 }
