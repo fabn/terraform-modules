@@ -4,11 +4,12 @@
 
 [ "${CLAUDE_CODE_REMOTE:-}" != "true" ] && exit 0
 
-# --- Persist PATH so every Bash tool call sees ~/.local/bin -----------------
+# --- Persist mise-managed PATH so every Bash tool call inherits it ---
 # Claude Code's Bash tool uses non-interactive shells that skip .bashrc,
-# so we must inject the local-bin PATH via CLAUDE_ENV_FILE.
-if [ -n "${CLAUDE_ENV_FILE:-}" ]; then
-  export PATH="$HOME/.local/bin:$PATH"
+# so we must inject the mise-shimmed PATH via CLAUDE_ENV_FILE.
+if [ -n "${CLAUDE_ENV_FILE:-}" ] && command -v mise >/dev/null 2>&1; then
+  mise trust "$CLAUDE_PROJECT_DIR/mise.toml" 2>/dev/null || true
+  eval "$(mise activate bash 2>/dev/null)" || true
   echo "PATH=$PATH" >> "$CLAUDE_ENV_FILE"
 fi
 
@@ -16,9 +17,6 @@ fi
 ISSUES=()
 command -v terraform >/dev/null 2>&1 || ISSUES+=("terraform missing")
 command -v actionlint >/dev/null 2>&1 || ISSUES+=("actionlint missing")
-command -v sops >/dev/null 2>&1 || ISSUES+=("sops missing")
-command -v kind >/dev/null 2>&1 || ISSUES+=("kind missing")
-command -v kubectl >/dev/null 2>&1 || ISSUES+=("kubectl missing")
 
 if [ ${#ISSUES[@]} -gt 0 ]; then
   echo "SETUP INCOMPLETE: ${ISSUES[*]}. See /tmp/claude-user-setup.log"

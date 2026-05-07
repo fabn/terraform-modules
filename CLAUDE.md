@@ -6,6 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Curated collection of reusable Terraform modules, grouped by provider/concern. Each leaf directory under the top-level groups (`digitalocean/`, `github/`, `k8s/`, `misc/`, `spacelift/`) is an independent module with its own `main.tf`, optional `variables.tf` / `outputs.tf`, and one or more `*.tftest.hcl` test files.
 
+## Tool versions
+
+`mise.toml` (with `mise.lock`) pins the versions of `terraform` and `actionlint` used by both local development and Claude Code cloud sessions. Run `mise install` once to materialize them (or `mise trust .` first if prompted). Any version drift between this repo and CI lives here.
+
 ## Common commands
 
 All commands operate on a single module (use `-chdir=<module>` from repo root, or `cd` first). The repo is not a single root configuration — there is no top-level `terraform init`.
