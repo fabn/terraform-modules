@@ -33,7 +33,7 @@ variable "project_root" {
 }
 
 variable "administrative" {
-  description = "Whether the stack should have administrative privileges."
+  description = "Whether the stack should have administrative privileges, granted by attaching the Space Admin role on the stack's own space."
   type        = bool
   default     = false
 }
