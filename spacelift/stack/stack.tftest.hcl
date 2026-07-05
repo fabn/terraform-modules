@@ -20,6 +20,46 @@ run "simple" {
     condition     = output.stack_id == spacelift_stack.stack.id
     error_message = "Stack ID was not set as output"
   }
+
+  assert {
+    condition     = length(spacelift_role_attachment.administrative) == 0
+    error_message = "No role attachment should be created for non-administrative stacks"
+  }
+}
+
+run "administrative" {
+  override_data {
+    target = data.spacelift_role.space_admin[0]
+    values = {
+      id = "space-admin-role-id"
+    }
+  }
+
+  override_data {
+    target = data.spacelift_space.root
+    values = {
+      id = "root"
+    }
+  }
+
+  variables {
+    administrative = true
+  }
+
+  assert {
+    condition     = spacelift_role_attachment.administrative[0].role_id == "space-admin-role-id"
+    error_message = "Space Admin role was not attached"
+  }
+
+  assert {
+    condition     = spacelift_role_attachment.administrative[0].stack_id == spacelift_stack.stack.id
+    error_message = "Role attachment does not target the stack"
+  }
+
+  assert {
+    condition     = spacelift_role_attachment.administrative[0].space_id == "root"
+    error_message = "Role attachment does not target the stack's space"
+  }
 }
 
 run "create_context" {

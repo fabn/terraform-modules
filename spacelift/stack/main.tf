@@ -2,6 +2,8 @@ terraform {
   required_providers {
     spacelift = {
       source = "spacelift-io/spacelift"
+      # 1.37.0 is the first release where spacelift_role_attachment supports stacks
+      version = ">= 1.37.0"
     }
   }
 }
@@ -16,7 +18,6 @@ resource "spacelift_stack" "stack" {
   space_id                        = data.spacelift_space.root.id
   repository                      = var.repository
   branch                          = var.branch
-  administrative                  = var.administrative
   labels                          = var.labels
   project_root                    = var.project_root
   autodeploy                      = var.autodeploy
@@ -34,6 +35,20 @@ resource "spacelift_stack" "stack" {
       namespace = github_enterprise.value
     }
   }
+}
+
+# Replaces the deprecated `administrative` stack attribute: grants the stack
+# the built-in Space Admin role on its own space via a role attachment.
+data "spacelift_role" "space_admin" {
+  count = var.administrative ? 1 : 0
+  slug  = "space-admin"
+}
+
+resource "spacelift_role_attachment" "administrative" {
+  count    = var.administrative ? 1 : 0
+  stack_id = spacelift_stack.stack.id
+  role_id  = data.spacelift_role.space_admin[0].id
+  space_id = data.spacelift_space.root.id
 }
 
 resource "spacelift_environment_variable" "secrets" {
