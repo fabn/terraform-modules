@@ -69,6 +69,12 @@ run "install_full_release" {
     hostname = var.hostname
     # Passed to make test dependent on ingress controller
     ingress_class_name = run.nginx.ingress_class_name
+    # To avoid failing test
+    extra_values = {
+      postDelete = {
+        enabled = false
+      }
+    }
   }
 
   assert {
