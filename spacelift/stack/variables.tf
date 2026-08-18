@@ -9,6 +9,12 @@ variable "description" {
   default     = null
 }
 
+variable "slug" {
+  description = "Slug of the stack. When null the provider derives it from the stack name."
+  type        = string
+  default     = null
+}
+
 variable "space_id" {
   description = "Space where to create the context"
   type        = string
@@ -32,6 +38,12 @@ variable "project_root" {
   type        = string
 }
 
+variable "additional_project_globs" {
+  description = "Paths to track changes of in addition to the project root."
+  type        = set(string)
+  default     = null
+}
+
 variable "administrative" {
   description = "Whether the stack should have administrative privileges, granted by attaching the Space Admin role on the stack's own space."
   type        = bool
@@ -43,6 +55,24 @@ variable "runner_image" {
   type        = string
   default     = null
   # e.g. "fabn/runner-terraform:v1.8.1"
+}
+
+variable "terraform_version" {
+  description = "Terraform version used by the managed stack. Defaults to the last MPL licensed release, which Spacelift default runner images ship."
+  type        = string
+  default     = "1.5.7"
+}
+
+variable "protect_from_deletion" {
+  description = "Whether the stack is protected from deletion. Set to false to retire the stack."
+  type        = bool
+  default     = true
+}
+
+variable "enable_sensitive_outputs_upload" {
+  description = "Whether sensitive outputs are uploaded so dependent stacks can consume them. When null the provider default applies."
+  type        = bool
+  default     = null
 }
 
 variable "labels" {
