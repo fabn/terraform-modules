@@ -15,17 +15,20 @@ data "spacelift_space" "root" {
 resource "spacelift_stack" "stack" {
   name                            = var.name
   description                     = var.description
+  slug                            = var.slug
   space_id                        = data.spacelift_space.root.id
   repository                      = var.repository
   branch                          = var.branch
   labels                          = var.labels
   project_root                    = var.project_root
+  additional_project_globs        = var.additional_project_globs
   autodeploy                      = var.autodeploy
   terraform_smart_sanitization    = true
   terraform_external_state_access = true
   enable_local_preview            = true
-  protect_from_deletion           = true
-  terraform_version               = "1.5.7"
+  enable_sensitive_outputs_upload = var.enable_sensitive_outputs_upload
+  protect_from_deletion           = var.protect_from_deletion
+  terraform_version               = var.terraform_version
   terraform_workflow_tool         = "TERRAFORM_FOSS"
   runner_image                    = var.runner_image
 
