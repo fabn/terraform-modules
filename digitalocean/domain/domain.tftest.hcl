@@ -33,4 +33,27 @@ run "create_domain" {
     condition     = output.root_domain_ip == "127.0.0.2"
     error_message = "The root domain IP was not created"
   }
+
+  assert {
+    condition     = digitalocean_record.wildcard.ttl == 1800 && digitalocean_record.root.ttl == 1800
+    error_message = "The default TTL changed, which every existing caller inherits"
+  }
+}
+
+run "custom_main_records_ttl" {
+  command = plan
+
+  variables {
+    name = "terraform.dev"
+    main_records = {
+      wildcard = "127.0.0.1"
+      root     = "127.0.0.2"
+      ttl      = 60
+    }
+  }
+
+  assert {
+    condition     = digitalocean_record.wildcard.ttl == 60 && digitalocean_record.root.ttl == 60
+    error_message = "The TTL was not applied to both main records"
+  }
 }
