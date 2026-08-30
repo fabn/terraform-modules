@@ -12,6 +12,10 @@ variable "main_records" {
   type = object({
     wildcard = optional(string)
     root     = optional(string)
+    # Shared by both records rather than one each: they are what a consumer
+    # lowers together before repointing a zone, so that resolvers stop handing
+    # out the old answer within the new TTL rather than the old one.
+    ttl = optional(number, 1800)
   })
   default = {}
 }

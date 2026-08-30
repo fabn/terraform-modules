@@ -16,7 +16,7 @@ resource "digitalocean_record" "wildcard" {
   domain = digitalocean_domain.domain.name
   type   = "A"
   name   = "*"
-  ttl    = 1800
+  ttl    = var.main_records.ttl
   value  = var.main_records.wildcard
 }
 
@@ -24,7 +24,7 @@ resource "digitalocean_record" "root" {
   domain = digitalocean_domain.domain.name
   type   = "A"
   name   = "@"
-  ttl    = 1800
+  ttl    = var.main_records.ttl
   value  = var.main_records.root
 }
 
